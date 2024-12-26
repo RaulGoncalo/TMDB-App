@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="black2">#28292b</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="text_pressed">#80FFFFFF</color>
+    <color name="main_color">#1F1D2B</color>
+    <color name="orange">#FF7427</color>
+    <color name="orange_pressed">#CCFF7427</color> <!-- Cor ao clicar -->
+    <color name="yellow">#FFC107</color>
+    <color name="errorEditText">#E43A3F</color>
+    <color name="dark_blue">#252836</color>
+    <color name="dark_blue_focus">#99252836</color>
+    <color name="textIntro">#9F9A9A</color>
+</resources>

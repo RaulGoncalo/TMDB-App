@@ -1,0 +1,49 @@
+package com.rgos_developer.tmdbapp.presentation.viewModels
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.rgos_developer.tmdbapp.domain.usescases.MovieUseCase
+import com.rgos_developer.tmdbapp.presentation.models.MoviePresentatioModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+
+@HiltViewModel
+class MovieViewModel @Inject constructor(
+    private val useCase: MovieUseCase
+) : ViewModel() {
+
+    private val _listPopularMovies = MutableLiveData<List<MoviePresentatioModel>>()
+    private val _listUpcomingMovies = MutableLiveData<List<MoviePresentatioModel>>()
+    private val _listTopRatedMovies = MutableLiveData<List<MoviePresentatioModel>>()
+
+    val listPopularMovies: LiveData<List<MoviePresentatioModel>>
+        get() = _listPopularMovies
+
+    val listUpcomingMovies: LiveData<List<MoviePresentatioModel>>
+        get() = _listUpcomingMovies
+
+    val  listTopRatedMovies: LiveData<List<MoviePresentatioModel>>
+        get() = _listTopRatedMovies
+
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    init {
+        getMovies()
+    }
+
+    private fun getMovies(){
+        viewModelScope.launch {
+            _isLoading.value = true // Começa o loading
+            _listPopularMovies.value = useCase.getPopularMovies()
+            _listUpcomingMovies.value = useCase.getUpcomingMovies()
+            _listTopRatedMovies.value = useCase.getTopRatedMovies()
+            _isLoading.value = false // Finaliza o loading
+        }
+    }
+}

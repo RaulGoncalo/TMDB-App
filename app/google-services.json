@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "933428263284",
+    "project_id": "app-tmdb-427ac",
+    "storage_bucket": "app-tmdb-427ac.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:933428263284:android:18a158b7d634593a605421",
+        "android_client_info": {
+          "package_name": "com.rgos_developer.tmdbapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-TZKsLCam6c13S8DkEean6IWFw8VseBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
