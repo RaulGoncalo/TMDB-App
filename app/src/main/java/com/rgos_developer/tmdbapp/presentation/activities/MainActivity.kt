@@ -15,21 +15,12 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    //-----------------Atributos--------------------------
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private  lateinit var bottomNavBar: ChipNavigationBar
-
     private lateinit var containerFragment: FrameLayout
 
-    //Utilizar o viewPager para dislizar entres as fragments utilizando o ChipNavigationBar
-    /*
-    private lateinit var viewPagerAdapter: ContainerFragmentAdapter
-    private lateinit var containerFragment: ViewPager2
-    */
-
-    //-----------------Métodos--------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -37,13 +28,6 @@ class MainActivity : AppCompatActivity() {
         bottomNavBar = binding.bottomNavBar
         containerFragment = binding.frameContainerFragment
         initializeChipNavigationBar()
-
-        //Utilizar o viewPager para dislizar entres as fragments utilizando o ChipNavigationBar
-        /*
-        containerFragment = binding.containerFragment
-        setupViewPager()
-        setupBottomNavigation()
-        */
     }
 
     private fun initializeChipNavigationBar() {
@@ -71,53 +55,4 @@ class MainActivity : AppCompatActivity() {
     private fun replaceFragments(fragment: Fragment) {
         supportFragmentManager.beginTransaction().replace(R.id.frameContainerFragment, fragment).commit()
     }
-
-    //Utilizar o viewPager para dislizar entres as fragments utilizando o ChipNavigationBar
-    /*private fun setupViewPager() {
-        viewPagerAdapter = ContainerFragmentAdapter(
-            supportFragmentManager,
-            lifecycle
-        )
-        containerFragment.adapter = viewPagerAdapter
-
-        containerFragment.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                when (position) {
-                    0 -> {
-                        bottomNavBar.setItemSelected(R.id.explorer, true)
-                    }
-                    1 -> {
-                        bottomNavBar.setItemSelected(R.id.favorites, true)
-                    }
-                    2 -> {
-                        bottomNavBar.setItemSelected(R.id.profile, true)
-                    }
-                }
-            }
-        })
-    }
-
-    private fun setupBottomNavigation() {
-        bottomNavBar.setOnItemSelectedListener { menuItem ->
-            when (menuItem) {
-                R.id.explorer -> {
-                    containerFragment.currentItem = 0
-                    true
-                }
-                R.id.favorites -> {
-                    containerFragment.currentItem = 1
-                    true
-                }
-                R.id.profile -> {
-                    containerFragment.currentItem = 2
-                    true
-                }
-                else -> false
-            }
-        }
-
-        // Define o item inicial
-        bottomNavBar.setItemSelected(R.id.explorer, true)
-    }*/
 }

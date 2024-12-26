@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rgos_developer.tmdbapp.data.dto.User
 import com.rgos_developer.tmdbapp.utils.GeneralConstants
-import com.rgos_developer.tmdbapp.utils.MainConstants
 import com.rgos_developer.tmdbapp.utils.showMessage
 import com.rgos_developer.tmdbapp.presentation.activities.MovieDetailActivity
 import com.rgos_developer.tmdbapp.databinding.FragmentHomeBinding
@@ -68,7 +67,7 @@ class HomeFragment : Fragment(){
 
         //busca de dados
         getUser()
-        loadMoviesData()
+        setupMovieDataObservers()
 
         return binding.root
     }
@@ -130,17 +129,12 @@ class HomeFragment : Fragment(){
         return user
     }
 
-    private fun loadMoviesData() {
-        // Observar mudanças no estado de carregamento
+    private fun setupMovieDataObservers() {
         movieViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading) {
-                showLoading(MainConstants.TYPE_POPULAR)
-                showLoading(MainConstants.TYPE_UPCOMING)
-                showLoading(MainConstants.TYPE_TOP_RATED)
+                showLoading()
             } else {
-                hideLoading(MainConstants.TYPE_POPULAR)
-                hideLoading(MainConstants.TYPE_UPCOMING)
-                hideLoading(MainConstants.TYPE_TOP_RATED)
+                hideLoading()
             }
         }
         movieViewModel.listPopularMovies.observe(viewLifecycleOwner){
@@ -205,20 +199,16 @@ class HomeFragment : Fragment(){
         })
     }
 
-    private fun showLoading(type: String) {
-        when (type) {
-            MainConstants.TYPE_POPULAR -> binding.pbPopularMovies.visibility = View.VISIBLE
-            MainConstants.TYPE_UPCOMING -> binding.pbUpcomingMovies.visibility = View.VISIBLE
-            MainConstants.TYPE_TOP_RATED -> binding.progressBarSlider.visibility = View.VISIBLE
-        }
+    private fun showLoading() {
+        binding.pbPopularMovies.visibility = View.VISIBLE
+        binding.pbUpcomingMovies.visibility = View.VISIBLE
+        binding.progressBarSlider.visibility = View.VISIBLE
     }
 
-    private fun hideLoading(type: String) {
-        when (type) {
-            MainConstants.TYPE_POPULAR -> binding.pbPopularMovies.visibility = View.GONE
-            MainConstants.TYPE_UPCOMING -> binding.pbUpcomingMovies.visibility = View.GONE
-            MainConstants.TYPE_TOP_RATED -> binding.progressBarSlider.visibility = View.GONE
-        }
+    private fun hideLoading() {
+        binding.pbPopularMovies.visibility = View.GONE
+        binding.pbUpcomingMovies.visibility = View.GONE
+        binding.progressBarSlider.visibility = View.GONE
     }
 
     private fun initViews() {

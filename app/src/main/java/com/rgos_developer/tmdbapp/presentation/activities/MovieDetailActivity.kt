@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import eightbitlab.com.blurview.RenderScriptBlur
 
 @AndroidEntryPoint
-class MovieDetailActivity : AppCompatActivity(), BaseView {
+class MovieDetailActivity : AppCompatActivity() {
 
     private val binding: ActivityMovieDetailBinding by lazy {
         ActivityMovieDetailBinding.inflate(layoutInflater)
@@ -50,35 +50,11 @@ class MovieDetailActivity : AppCompatActivity(), BaseView {
 
         viewModel = ViewModelProvider(this)[MovieDetailsCreditsViewModel::class.java]
 
-        viewModel.movieDetails.observe(this) { details ->
-            if (details != null) {
-                displayMovieDetails(details)
-            }
-        }
+        setupMovieDataObservers()
+        fetchMovieData()
+    }
 
-        viewModel.movieCredits.observe(this) { credits ->
-            if (credits != null) {
-                displayMovieCredits(credits)
-            }
-        }
-
-        viewModel.isLoading.observe(this) { isLoading ->
-            if (isLoading) {
-                showLoading(MovieDetailConstants.TYPE_DETAILS)
-                showLoading(MovieDetailConstants.TYPE_CREDITS)
-            } else {
-                hideLoading(MovieDetailConstants.TYPE_DETAILS)
-                hideLoading(MovieDetailConstants.TYPE_CREDITS)
-            }
-        }
-
-        viewModel.errorMessage.observe(this) { message ->
-            message?.let {
-                showMessage(it)
-            }
-        }
-
-        // Chama a função para buscar dados (apenas se o ID do filme for válido)
+    private fun fetchMovieData() {
         if (idMovie != null && idMovie != 0L) {
             viewModel.getMovieDetailsCredits(idMovie!!)
         } else {
@@ -86,45 +62,63 @@ class MovieDetailActivity : AppCompatActivity(), BaseView {
         }
     }
 
-    fun displayMovieDetails(movie: MovieDetailsPresentationModel) {
+    private fun setupMovieDataObservers() {
+        viewModel.movieDetails.observe(this) { details ->
+            details?.let { displayMovieDetails(it) }
+        }
+
+        viewModel.movieCredits.observe(this) { credits ->
+            credits?.let { displayMovieCredits(it) }
+        }
+
+        viewModel.isLoading.observe(this) { isLoading ->
+            if (isLoading) {
+                showLoading()
+            } else {
+                hideLoading()
+            }
+        }
+
+        viewModel.errorMessage.observe(this) { message ->
+            message?.let { showMessage(it) }
+        }
+    }
+
+    private fun displayMovieDetails(movie: MovieDetailsPresentationModel) {
         val resquestOptions =
             RequestOptions().transform(FitCenter(), GranularRoundedCorners(0f, 0f, 50f, 50f))
         Glide
             .with(this@MovieDetailActivity)
-            .load("https://image.tmdb.org/t/p/original${movie.posterPath}")
+            .load(movie.posterPath)
             .apply(resquestOptions)
             .error(R.drawable.profile)
             .into(binding.moviePic)
 
         binding.textMovieDetailTitle.text = movie.title
-        binding.textImdb.text = String.format("%.2f", movie.voteAverage)
+        binding.textImdb.text = movie.voteAverage
         binding.textSummery.text = movie.overview
-        binding.textMovieTime.text = movie.runtime.toString() + " minutos"
+        binding.textMovieTime.text = movie.runtime
 
         if (genreItemAdapter != null) {
             genreItemAdapter!!.addListGenres(movie.genres)
         }
     }
 
-    fun displayMovieCredits(credits: MovieCreditsPresentationModel) {
+    private fun displayMovieCredits(credits: MovieCreditsPresentationModel) {
         castItemAdapter?.addListCast(credits.cast)
     }
 
-    override fun showLoading(type: String) {
-        when(type){
-            MovieDetailConstants.TYPE_DETAILS -> binding.pbMoviePic.visibility = View.VISIBLE
-            MovieDetailConstants.TYPE_CREDITS -> binding.pbCast.visibility = View.VISIBLE
-        }
+    private fun showLoading() {
+        binding.pbMoviePic.visibility = View.VISIBLE
+        binding.pbCast.visibility = View.VISIBLE
     }
 
-    override fun hideLoading(type: String) {
-        when(type){
-            MovieDetailConstants.TYPE_DETAILS -> binding.pbMoviePic.visibility = View.GONE
-            MovieDetailConstants.TYPE_CREDITS -> binding.pbCast.visibility = View.GONE
-        }
+    private fun hideLoading() {
+        binding.pbMoviePic.visibility = View.GONE
+        binding.pbCast.visibility = View.GONE
     }
 
-    override fun initViews() {
+    private fun initViews() {
         //RecyclerViews
         genreItemAdapter = GenreItemAdapter()
         binding.rvGenreView.adapter = genreItemAdapter

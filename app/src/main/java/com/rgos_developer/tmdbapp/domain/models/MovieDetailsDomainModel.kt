@@ -12,7 +12,7 @@ data class MovieDetailsDomainModel(
     val genres: List<GenreDomainModel>,
 )
 
-fun MovieDetailsDomainModel.toMovieDetailsPresentationModel() = MovieDetailsPresentationModel(
+/*fun MovieDetailsDomainModel.toMovieDetailsPresentationModel() = MovieDetailsPresentationModel(
     id = this.id,
     posterPath = this.posterPath,
     title = this.title,
@@ -20,4 +20,4 @@ fun MovieDetailsDomainModel.toMovieDetailsPresentationModel() = MovieDetailsPres
     overview = this.overview,
     runtime = this.runtime,
     genres = this.genres.map { it.toGenrePresentationModel() }
-)
+)*/
