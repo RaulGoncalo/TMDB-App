@@ -4,7 +4,7 @@ import android.util.Log
 import com.rgos_developer.tmdbapp.presentation.adapters.ResultCredits
 import com.rgos_developer.tmdbapp.data.dto.MovieDetailsDTO
 import com.rgos_developer.tmdbapp.data.remote.ApiService
-import com.rgos_developer.tmdbapp.Utils.MovieDetailConstants
+import com.rgos_developer.tmdbapp.utils.MovieDetailConstants
 import com.rgos_developer.tmdbapp.presentation.Activities.MovieDetailActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

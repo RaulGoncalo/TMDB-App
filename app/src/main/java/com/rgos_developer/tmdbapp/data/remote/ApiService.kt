@@ -3,7 +3,7 @@ package com.rgos_developer.tmdbapp.data.remote
 import com.rgos_developer.tmdbapp.presentation.adapters.ResultCredits
 import com.rgos_developer.tmdbapp.data.dto.MovieDetailsDTO
 import com.rgos_developer.tmdbapp.data.dto.ResultMoviesDTO
-import com.rgos_developer.tmdbapp.Utils.ApiConstants
+import com.rgos_developer.tmdbapp.utils.ApiConstants
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

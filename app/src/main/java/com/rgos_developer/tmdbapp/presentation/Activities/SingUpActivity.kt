@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rgos_developer.tmdbapp.data.dto.User
-import com.rgos_developer.tmdbapp.Utils.showMessage
+import com.rgos_developer.tmdbapp.utils.showMessage
 import com.rgos_developer.tmdbapp.databinding.ActivitySingUpBinding
 
 class SingUpActivity : AppCompatActivity() {

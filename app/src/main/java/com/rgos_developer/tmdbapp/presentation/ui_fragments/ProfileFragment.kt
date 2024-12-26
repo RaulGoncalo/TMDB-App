@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.rgos_developer.tmdbapp.Utils.showMessage
+import com.rgos_developer.tmdbapp.utils.showMessage
 import com.rgos_developer.tmdbapp.presentation.Activities.LoginActivity
 import com.rgos_developer.tmdbapp.presentation.BaseView
 import com.rgos_developer.tmdbapp.databinding.FragmentProfileBinding

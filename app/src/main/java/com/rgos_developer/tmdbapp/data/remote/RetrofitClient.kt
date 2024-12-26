@@ -1,7 +1,7 @@
 package com.rgos_developer.tmdbapp.data.remote
 
 
-import com.rgos_developer.tmdbapp.Utils.ApiConstants
+import com.rgos_developer.tmdbapp.utils.ApiConstants
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

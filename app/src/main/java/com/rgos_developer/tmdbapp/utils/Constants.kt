@@ -1,4 +1,4 @@
-package com.rgos_developer.tmdbapp.Utils
+package com.rgos_developer.tmdbapp.utils
 
 class MainConstants {
     companion object {

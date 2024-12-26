@@ -3,11 +3,10 @@ package com.rgos_developer.tmdbapp.presentation.Activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.rgos_developer.tmdbapp.Utils.showMessage
+import com.rgos_developer.tmdbapp.utils.showMessage
 import com.rgos_developer.tmdbapp.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
