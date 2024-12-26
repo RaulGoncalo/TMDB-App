@@ -2,10 +2,8 @@ package com.rgos_developer.tmdbapp.presentation.Activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowManager
 import com.google.firebase.auth.FirebaseAuth
-import com.rgos_developer.tmdbapp.R
-import com.rgos_developer.tmdbapp.Utils.showMessage
+import com.rgos_developer.tmdbapp.utils.showMessage
 import com.rgos_developer.tmdbapp.databinding.ActivityForgetPasswordBinding
 
 class ForgetPasswordActivity : AppCompatActivity() {

@@ -17,41 +17,36 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rgos_developer.tmdbapp.data.dto.User
-import com.rgos_developer.tmdbapp.Utils.GeneralConstants
-import com.rgos_developer.tmdbapp.Utils.MainConstants
+import com.rgos_developer.tmdbapp.utils.GeneralConstants
+import com.rgos_developer.tmdbapp.utils.MainConstants
+import com.rgos_developer.tmdbapp.utils.showMessage
 import com.rgos_developer.tmdbapp.presentation.Activities.MovieDetailActivity
-import com.rgos_developer.tmdbapp.presentation.BaseView
 import com.rgos_developer.tmdbapp.databinding.FragmentHomeBinding
 import com.rgos_developer.tmdbapp.presentation.adapters.PopularMoviesItemAdapter
 import com.rgos_developer.tmdbapp.presentation.adapters.SliderAdapter
 import com.rgos_developer.tmdbapp.presentation.adapters.UpcomingMoviesItemAdapter
-
 import com.rgos_developer.tmdbapp.presentation.viewModels.MovieViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), BaseView {
-
-    //-----------------Atributos--------------------------
+class HomeFragment : Fragment(){
+    //instsance binding
     private lateinit var binding: FragmentHomeBinding
+    //instsances firebase
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseFirestore: FirebaseFirestore
-
-    //configuração dos sliders
+    //instsances slider
     private val sliderHandler = Handler()
     private val sliderRunnable = Runnable {
         binding.viewPagerSlider.currentItem = binding.viewPagerSlider.currentItem + 1
     }
-
-    //adapter dos itens movies
+    //instsances adapters
     private var popularMoviesItemAdapter: PopularMoviesItemAdapter? = null
     private var upcomingMoviesItemAdapter: UpcomingMoviesItemAdapter? = null
     private var sliderAdapter: SliderAdapter? = null
-
     //user
     private var user: User? = null
-
     //ViewModel
     private lateinit var movieViewModel: MovieViewModel
 
@@ -64,13 +59,14 @@ class HomeFragment : Fragment(), BaseView {
         firebaseAuth = FirebaseAuth.getInstance()
         firebaseFirestore =  FirebaseFirestore.getInstance()
 
+        //incializações de views e banners
         initViews()
         initBanner()
 
         //ViewModel//
-        movieViewModel = ViewModelProvider(this)[MovieViewModel::class.java]//pode ser o que esta quebrando a aplicação
+        movieViewModel = ViewModelProvider(this)[MovieViewModel::class.java]
 
-
+        //busca de dados
         getUser()
         loadMoviesData()
 
@@ -92,7 +88,6 @@ class HomeFragment : Fragment(), BaseView {
         sliderHandler.removeCallbacks(sliderRunnable)
     }
 
-    //-----------------Métodos da Home--------------------------
     private fun getUser() : User {
         val idUser = firebaseAuth.currentUser?.uid
 
@@ -149,15 +144,27 @@ class HomeFragment : Fragment(), BaseView {
             }
         }
         movieViewModel.listPopularMovies.observe(viewLifecycleOwner){
-            popularMoviesItemAdapter?.loadList(it)//pode ser o que esta quebrando a aplicação
+            if(it.isNotEmpty()){
+                popularMoviesItemAdapter?.loadList(it)
+            }else{
+                showMessage("Erro ao buscar filmes populares!")
+            }
         }
 
         movieViewModel.listUpcomingMovies.observe(viewLifecycleOwner){
-            upcomingMoviesItemAdapter?.loadList(it)//pode ser o que esta quebrando a aplicação
+            if(it.isNotEmpty()){
+                upcomingMoviesItemAdapter?.loadList(it)
+            }else{
+                showMessage("Erro ao buscar filmes que estão por vim!")
+            }
         }
 
         movieViewModel.listTopRatedMovies.observe(viewLifecycleOwner){
-            sliderAdapter?.loadList(it)//pode ser o que esta quebrando a aplicação
+            if(it.isNotEmpty()){
+                sliderAdapter?.loadList(it)
+            }else{
+                showMessage("Erro ao buscar filmes mais votados!")
+            }
         }
     }
 
@@ -198,22 +205,23 @@ class HomeFragment : Fragment(), BaseView {
         })
     }
 
-    //-----------------Métodos da interface BaseView--------------------------
-    override fun showLoading(type: String) {
+    private fun showLoading(type: String) {
         when (type) {
             MainConstants.TYPE_POPULAR -> binding.pbPopularMovies.visibility = View.VISIBLE
             MainConstants.TYPE_UPCOMING -> binding.pbUpcomingMovies.visibility = View.VISIBLE
             MainConstants.TYPE_TOP_RATED -> binding.progressBarSlider.visibility = View.VISIBLE
         }
     }
-    override fun hideLoading(type: String) {
+
+    private fun hideLoading(type: String) {
         when (type) {
             MainConstants.TYPE_POPULAR -> binding.pbPopularMovies.visibility = View.GONE
             MainConstants.TYPE_UPCOMING -> binding.pbUpcomingMovies.visibility = View.GONE
             MainConstants.TYPE_TOP_RATED -> binding.progressBarSlider.visibility = View.GONE
         }
     }
-    override fun initViews() {
+
+    private fun initViews() {
         with(binding) {
             popularMoviesItemAdapter = PopularMoviesItemAdapter() { idMovie ->
                 openMovieDetailActivity(idMovie)

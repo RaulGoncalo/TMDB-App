@@ -16,8 +16,8 @@ import com.rgos_developer.tmdbapp.presentation.adapters.ResultCredits
 import com.rgos_developer.tmdbapp.Controllers.MovieDetailConstroller
 import com.rgos_developer.tmdbapp.data.dto.MovieDetailsDTO
 import com.rgos_developer.tmdbapp.data.remote.RetrofitClient
-import com.rgos_developer.tmdbapp.Utils.GeneralConstants
-import com.rgos_developer.tmdbapp.Utils.MovieDetailConstants
+import com.rgos_developer.tmdbapp.utils.GeneralConstants
+import com.rgos_developer.tmdbapp.utils.MovieDetailConstants
 import com.rgos_developer.tmdbapp.presentation.BaseView
 import com.rgos_developer.tmdbapp.databinding.ActivityMovieDetailBinding
 import eightbitlab.com.blurview.RenderScriptBlur

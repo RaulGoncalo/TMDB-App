@@ -1,6 +1,6 @@
 package com.rgos_developer.tmdbapp.di
 
-import com.rgos_developer.tmdbapp.Utils.ApiConstants
+import com.rgos_developer.tmdbapp.utils.ApiConstants
 import com.rgos_developer.tmdbapp.data.remote.ApiService
 import com.rgos_developer.tmdbapp.data.remote.AuthInterceptor
 import com.rgos_developer.tmdbapp.data.repository.MovieRepositoryImpl
