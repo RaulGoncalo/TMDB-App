@@ -1,4 +1,4 @@
-package com.rgos_developer.tmdbapp.presentation.ui_fragments
+package com.rgos_developer.tmdbapp.presentation.fragments
 
 import android.Manifest
 import android.content.Intent
@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.rgos_developer.tmdbapp.utils.showMessage
-import com.rgos_developer.tmdbapp.presentation.Activities.LoginActivity
+import com.rgos_developer.tmdbapp.presentation.activities.LoginActivity
 import com.rgos_developer.tmdbapp.presentation.BaseView
 import com.rgos_developer.tmdbapp.databinding.FragmentProfileBinding
 

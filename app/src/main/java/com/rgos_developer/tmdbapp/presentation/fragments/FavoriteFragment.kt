@@ -1,4 +1,4 @@
-package com.rgos_developer.tmdbapp.presentation.ui_fragments
+package com.rgos_developer.tmdbapp.presentation.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

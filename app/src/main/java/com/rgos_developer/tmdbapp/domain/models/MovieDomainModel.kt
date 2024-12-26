@@ -1,6 +1,6 @@
 package com.rgos_developer.tmdbapp.domain.models
 
-import com.rgos_developer.tmdbapp.presentation.models.MoviePresentatioModel
+import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
 
 data class MovieDomainModel (
     val id: Long,
@@ -9,8 +9,8 @@ data class MovieDomainModel (
     val backdropPath: String
 )
 
-fun MovieDomainModel.toMoviePresationModel() : MoviePresentatioModel {
-    return MoviePresentatioModel(
+fun MovieDomainModel.toMoviePresationModel() : MoviePresentationModel {
+    return MoviePresentationModel(
         id = this.id,
         title = this.title,
         posterPath = this.posterPath,

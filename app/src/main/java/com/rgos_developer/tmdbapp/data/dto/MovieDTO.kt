@@ -28,11 +28,9 @@ data class MovieDTO(
     val voteCount: Long
 )
 
-fun MovieDTO.toMovieDomainModel() : MovieDomainModel{
-    return MovieDomainModel(
+fun MovieDTO.toMovieDomainModel() = MovieDomainModel(
         id = this.id,
         title = this.title,
         posterPath = this.posterPath,
         backdropPath = this.backdropPath
-    )
-}
+)

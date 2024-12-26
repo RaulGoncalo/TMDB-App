@@ -1,4 +1,4 @@
-package com.rgos_developer.tmdbapp.presentation.ui_fragments
+package com.rgos_developer.tmdbapp.presentation.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,7 +20,7 @@ import com.rgos_developer.tmdbapp.data.dto.User
 import com.rgos_developer.tmdbapp.utils.GeneralConstants
 import com.rgos_developer.tmdbapp.utils.MainConstants
 import com.rgos_developer.tmdbapp.utils.showMessage
-import com.rgos_developer.tmdbapp.presentation.Activities.MovieDetailActivity
+import com.rgos_developer.tmdbapp.presentation.activities.MovieDetailActivity
 import com.rgos_developer.tmdbapp.databinding.FragmentHomeBinding
 import com.rgos_developer.tmdbapp.presentation.adapters.PopularMoviesItemAdapter
 import com.rgos_developer.tmdbapp.presentation.adapters.SliderAdapter

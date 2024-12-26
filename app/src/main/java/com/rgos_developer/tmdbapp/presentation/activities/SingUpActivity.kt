@@ -1,4 +1,4 @@
-package com.rgos_developer.tmdbapp.presentation.Activities
+package com.rgos_developer.tmdbapp.presentation.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

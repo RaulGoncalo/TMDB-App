@@ -1,10 +1,9 @@
-package com.rgos_developer.tmdbapp.presentation.Activities
+package com.rgos_developer.tmdbapp.presentation.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.firebase.auth.FirebaseAuth
-import com.rgos_developer.tmdbapp.R
 import com.rgos_developer.tmdbapp.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {

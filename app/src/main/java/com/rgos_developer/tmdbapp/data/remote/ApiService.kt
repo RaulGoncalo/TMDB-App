@@ -1,6 +1,6 @@
 package com.rgos_developer.tmdbapp.data.remote
 
-import com.rgos_developer.tmdbapp.presentation.adapters.ResultCredits
+import com.rgos_developer.tmdbapp.data.dto.MovieCreditsDTO
 import com.rgos_developer.tmdbapp.data.dto.MovieDetailsDTO
 import com.rgos_developer.tmdbapp.data.dto.ResultMoviesDTO
 import com.rgos_developer.tmdbapp.utils.ApiConstants
@@ -40,5 +40,5 @@ interface ApiService {
         @Path(ApiConstants.QUERY_ID_MOVIE) idMovie: Long,
         @Query(ApiConstants.QUERY_LANGUAGE) language: String = ApiConstants.LANGUAGE,
         @Query(ApiConstants.QUERY_PAGE) page: Int = ApiConstants.DEFAULT_PAGE
-    ) : Response<ResultCredits>
+    ) : Response<MovieCreditsDTO>
 }
