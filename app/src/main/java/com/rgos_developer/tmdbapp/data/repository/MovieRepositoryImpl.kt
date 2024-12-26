@@ -1,8 +1,12 @@
 package com.rgos_developer.tmdbapp.data.repository
 
 import com.rgos_developer.tmdbapp.data.dto.ResultMoviesDTO
+import com.rgos_developer.tmdbapp.data.dto.toMovieCreditsDomainModel
+import com.rgos_developer.tmdbapp.data.dto.toMovieDetailsDomainModel
 import com.rgos_developer.tmdbapp.data.dto.toMovieDomainModel
 import com.rgos_developer.tmdbapp.data.remote.ApiService
+import com.rgos_developer.tmdbapp.domain.models.MovieCreditsDomainModel
+import com.rgos_developer.tmdbapp.domain.models.MovieDetailsDomainModel
 import com.rgos_developer.tmdbapp.domain.models.MovieDomainModel
 import com.rgos_developer.tmdbapp.domain.repository.MovieRepository
 import retrofit2.Response
@@ -69,5 +73,35 @@ class MovieRepositoryImpl @Inject constructor(
             e.printStackTrace()
         }
         return emptyList()
+    }
+
+    override suspend fun getMovieDetails(idMovie: Long): MovieDetailsDomainModel? {
+        try {
+            val result = apiService.getMovieDetails(idMovie)
+            if (result.isSuccessful) {
+                val movie = result.body()
+                if (movie != null) {
+                    return movie.toMovieDetailsDomainModel()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    override suspend fun getMovieCredits(idMovie: Long): MovieCreditsDomainModel? {
+        try {
+            val result = apiService.getMovieCredits(idMovie)
+            if (result.isSuccessful) {
+                val movie = result.body()
+                if (movie != null) {
+                    return movie.toMovieCreditsDomainModel()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 }

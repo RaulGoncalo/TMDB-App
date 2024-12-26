@@ -1,6 +1,6 @@
 package com.rgos_developer.tmdbapp.presentation.models
 
-data class MoviePresentatioModel (
+data class MoviePresentationModel (
     val id: Long,
     val title: String,
     val posterPath: String,

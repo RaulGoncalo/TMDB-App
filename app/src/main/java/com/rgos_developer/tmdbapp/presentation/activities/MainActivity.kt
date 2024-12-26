@@ -1,4 +1,4 @@
-package com.rgos_developer.tmdbapp.presentation.Activities
+package com.rgos_developer.tmdbapp.presentation.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,9 +7,9 @@ import androidx.fragment.app.Fragment
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.rgos_developer.tmdbapp.databinding.ActivityMainBinding
 import com.rgos_developer.tmdbapp.R
-import com.rgos_developer.tmdbapp.presentation.ui_fragments.FavoriteFragment
-import com.rgos_developer.tmdbapp.presentation.ui_fragments.HomeFragment
-import com.rgos_developer.tmdbapp.presentation.ui_fragments.ProfileFragment
+import com.rgos_developer.tmdbapp.presentation.fragments.FavoriteFragment
+import com.rgos_developer.tmdbapp.presentation.fragments.HomeFragment
+import com.rgos_developer.tmdbapp.presentation.fragments.ProfileFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 

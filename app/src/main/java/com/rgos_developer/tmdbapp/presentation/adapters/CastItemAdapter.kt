@@ -6,26 +6,35 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.rgos_developer.tmdbapp.R
 import com.rgos_developer.tmdbapp.databinding.ViewholderCastItemBinding
+import com.rgos_developer.tmdbapp.presentation.models.CastPresentationModel
 
 class CastItemAdapter(
     val context: Context
 ) : Adapter<CastItemAdapter.CastItemViewHolder>() {
-    private val listCast: MutableList<Cast> = mutableListOf<Cast>()
+    private val listCast: MutableList<CastPresentationModel> = mutableListOf<CastPresentationModel>()
 
-    fun addListCast(newListCast: List<Cast>){
+    fun addListCast(newListCast: List<CastPresentationModel>){
         listCast.addAll(newListCast)
         notifyDataSetChanged()
     }
 
 
     inner class CastItemViewHolder(val binding: ViewholderCastItemBinding) : ViewHolder(binding.root){
-        fun bind(cast: Cast){
+        fun bind(cast: CastPresentationModel){
             binding.textNameActor.setText(cast.name)
+
+            val imageUrl = if (cast.profilePath != null) {
+                "https://image.tmdb.org/t/p/original${cast.profilePath}"
+            } else {
+                null // Indica ao Glide que o caminho é inválido
+            }
 
             Glide
                 .with(context)
-                .load("https://image.tmdb.org/t/p/original${cast.profile_path}")
+                .load(imageUrl)
+                .error(R.drawable.profile)
                 .into(binding.imageViewProfileActor)
         }
     }

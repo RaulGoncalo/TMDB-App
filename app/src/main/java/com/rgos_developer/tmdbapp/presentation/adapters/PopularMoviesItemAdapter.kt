@@ -10,17 +10,17 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.rgos_developer.tmdbapp.databinding.ViewholderMovieItemBinding
-import com.rgos_developer.tmdbapp.presentation.models.MoviePresentatioModel
+import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
 
 class PopularMoviesItemAdapter(
     private val onClickItem: (Long) -> Unit
 ): RecyclerView.Adapter<PopularMoviesItemAdapter.MovieItemViewHolder>() {
 
-    val listMovies = mutableListOf<MoviePresentatioModel>()
+    val listMovies = mutableListOf<MoviePresentationModel>()
 
     private var context: Context? = null
 
-    fun loadList(newListMovies: List<MoviePresentatioModel>){
+    fun loadList(newListMovies: List<MoviePresentationModel>){
         listMovies.addAll(newListMovies)
         notifyDataSetChanged()
     }
@@ -28,7 +28,7 @@ class PopularMoviesItemAdapter(
     inner class MovieItemViewHolder(val binding: ViewholderMovieItemBinding) : ViewHolder(binding.root){
 
 
-        fun bind(movie: MoviePresentatioModel){
+        fun bind(movie: MoviePresentationModel){
             val resquestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(40))
             context?.let {
                 Glide

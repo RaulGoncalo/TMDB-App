@@ -5,22 +5,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.rgos_developer.tmdbapp.data.dto.GenreDTO
 import com.rgos_developer.tmdbapp.databinding.ViewholderGenreItemBinding
+import com.rgos_developer.tmdbapp.presentation.models.GenrePresentationModel
 
 class GenreItemAdapter: Adapter<GenreItemAdapter.GenreItemViewHolder>() {
-    private val listGenreDTOS: MutableList<GenreDTO> = mutableListOf<GenreDTO>()
+    private val listGenre: MutableList<GenrePresentationModel> = mutableListOf<GenrePresentationModel>()
 
-    fun addListGenres(newListGenreDTO: List<GenreDTO>){
-        listGenreDTOS.addAll(newListGenreDTO)
-        Log.i("teste_GenreItemAdapter", "addListGenres: ${listGenreDTOS[0].name}")
+    fun addListGenres(newListGenre: List<GenrePresentationModel>){
+        listGenre.addAll(newListGenre)
+        Log.i("teste_GenreItemAdapter", "addListGenres: ${listGenre[0].name}")
         notifyDataSetChanged()
     }
 
     inner class GenreItemViewHolder(val binding: ViewholderGenreItemBinding) : ViewHolder(binding.root){
 
-        fun bind(genreDTO: GenreDTO){
-            binding.textGenre.setText(genreDTO.name)
+        fun bind(genre: GenrePresentationModel){
+            binding.textGenre.setText(genre.name)
         }
     }
 
@@ -32,9 +32,9 @@ class GenreItemAdapter: Adapter<GenreItemAdapter.GenreItemViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: GenreItemViewHolder, position: Int) {
-        holder.bind(listGenreDTOS[position])
+        holder.bind(listGenre[position])
     }
 
-    override fun getItemCount(): Int = listGenreDTOS.size
+    override fun getItemCount(): Int = listGenre.size
 
 }

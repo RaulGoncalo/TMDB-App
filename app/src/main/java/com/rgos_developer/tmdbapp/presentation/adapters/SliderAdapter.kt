@@ -9,16 +9,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.rgos_developer.tmdbapp.data.dto.MovieDTO
 import com.rgos_developer.tmdbapp.databinding.ViewholderSliderItemBinding
-import com.rgos_developer.tmdbapp.presentation.models.MoviePresentatioModel
+import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
 
 class SliderAdapter(
     private val viewPager2: ViewPager2,
     private val onClickItem: (Long) -> Unit
 ) : RecyclerView.Adapter<SliderAdapter.SliderViewHolder>() {
 
-    val sliderItems = mutableListOf<MoviePresentatioModel>()
+    val sliderItems = mutableListOf<MoviePresentationModel>()
 
     private var context: Context? = null
 
@@ -27,14 +26,14 @@ class SliderAdapter(
         notifyDataSetChanged()
     }
 
-    fun loadList(newListMovies: List<MoviePresentatioModel>){
+    fun loadList(newListMovies: List<MoviePresentationModel>){
         sliderItems.addAll(newListMovies)
         notifyDataSetChanged()
     }
 
     inner class SliderViewHolder(private val binding: ViewholderSliderItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(sliderItem: MoviePresentatioModel) {
+        fun bind(sliderItem: MoviePresentationModel) {
             binding.titleText.setText(sliderItem.title)
             val resquestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(60))
             context?.let {
