@@ -34,13 +34,15 @@ class ForgetPasswordActivity : AppCompatActivity() {
     }
 
     private fun handleResetPassword() {
-        firebaseAuth.sendPasswordResetEmail(email)
+        val testePass = firebaseAuth.sendPasswordResetEmail(email)
             .addOnSuccessListener {
                 showMessage("Enviamos um e-mail para você!")
             }
             .addOnFailureListener {
                 showMessage("Error, tente mais tarde!")
             }
+
+        testePass.addOnCompleteListener {}
     }
 
     private fun validateEmail(): Boolean {

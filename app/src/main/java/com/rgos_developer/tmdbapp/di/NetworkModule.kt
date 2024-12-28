@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @InstallIn(ViewModelComponent::class)
 @Module
-object AppModule {
+object NetworkModule {
     @Provides
     fun provideAuthInterceptor() : Interceptor {
         return AuthInterceptor()

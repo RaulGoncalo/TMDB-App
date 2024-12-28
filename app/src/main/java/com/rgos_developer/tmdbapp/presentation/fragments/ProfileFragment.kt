@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.rgos_developer.tmdbapp.utils.showMessage
-import com.rgos_developer.tmdbapp.presentation.activities.LoginActivity
+import com.rgos_developer.tmdbapp.presentation.activities.SignInActivity
 import com.rgos_developer.tmdbapp.presentation.BaseView
 import com.rgos_developer.tmdbapp.databinding.FragmentProfileBinding
 
@@ -239,8 +239,8 @@ class ProfileFragment : Fragment(), BaseView {
                 .setNegativeButton("Cancelar"){dialog, posicao -> }
                 .setPositiveButton("Sim") {dialog, posicao ->
                     firebaseAuth.signOut()
-                    // Navega para a LoginActivity
-                    val intent = Intent(requireContext(), LoginActivity::class.java)
+                    // Navega para a SignInActivity
+                    val intent = Intent(requireContext(), SignInActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
 

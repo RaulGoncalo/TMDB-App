@@ -16,7 +16,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.rgos_developer.tmdbapp.data.dto.User
+import com.rgos_developer.tmdbapp.domain.models.User
 import com.rgos_developer.tmdbapp.utils.GeneralConstants
 import com.rgos_developer.tmdbapp.utils.showMessage
 import com.rgos_developer.tmdbapp.presentation.activities.MovieDetailActivity

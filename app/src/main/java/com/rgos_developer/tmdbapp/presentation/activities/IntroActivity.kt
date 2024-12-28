@@ -15,10 +15,9 @@ class IntroActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.btnGetStart.setOnClickListener {
             startActivity(
-                Intent(this, LoginActivity::class.java)
+                Intent(this, SignInActivity::class.java)
             )
             finish()
         }
-
     }
 }
