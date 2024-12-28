@@ -12,12 +12,12 @@
         android:layout_width="74dp"
         android:layout_height="74dp"
         android:layout_marginTop="8dp"
-        android:scaleType="center"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/circleImageViewProfile"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/profile" />
 
     <TextView
         android:id="@+id/textNameActor"

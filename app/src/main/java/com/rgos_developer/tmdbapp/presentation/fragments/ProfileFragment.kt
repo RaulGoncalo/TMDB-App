@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,9 +21,13 @@ import com.rgos_developer.tmdbapp.utils.showMessage
 import com.rgos_developer.tmdbapp.presentation.activities.SignInActivity
 import com.rgos_developer.tmdbapp.presentation.BaseView
 import com.rgos_developer.tmdbapp.databinding.FragmentProfileBinding
+import com.rgos_developer.tmdbapp.domain.common.ResultState
+import com.rgos_developer.tmdbapp.domain.models.User
+import com.rgos_developer.tmdbapp.presentation.viewModels.UserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
-class ProfileFragment : Fragment(), BaseView {
+@AndroidEntryPoint
+class ProfileFragment : Fragment() {
     //DataBinding
     private lateinit var binding: FragmentProfileBinding
     //Firebase
@@ -48,6 +53,7 @@ class ProfileFragment : Fragment(), BaseView {
         }
     }
 
+    private lateinit var userViewModel: UserViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,18 +62,65 @@ class ProfileFragment : Fragment(), BaseView {
         firebaseAuth = FirebaseAuth.getInstance()
         firebaseFirestore = FirebaseFirestore.getInstance()
         firebaseStorage = FirebaseStorage.getInstance()
+
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+
         idUser = firebaseAuth.currentUser?.uid
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+
+        setupObservers()
 
         getPermissions()
         initViews()
 
+        getUserData(idUser)
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        getInitialDataUser()
+    private fun setupObservers() {
+        userViewModel.getUserState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is ResultState.Loading -> showLoading()
+                is ResultState.Success -> setDisplayUser(state.value)
+                is ResultState.Error -> showMessage(state.exception.message.toString())
+            }
+        }
+
+        userViewModel.updateUserState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is ResultState.Loading -> showLoading()
+                is ResultState.Success -> showMessage(state.value)
+                is ResultState.Error -> showMessage(state.exception.message.toString())
+            }
+        }
+
+        /*userViewModel.addPhotoUserState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is ResultState.Loading -> {
+
+                }
+
+                is ResultState.Success -> {
+
+                }
+
+                is ResultState.Error -> {
+
+                }
+            }
+        }*/
+
+    }
+
+    private fun setDisplayUser(user: User) {
+        binding.editTextNameProfile.setText(user.name)
+        if(user.photo.isNotEmpty()){
+            Glide
+                .with(this)
+                .load(user.photo)
+                .into(binding.imageProfile)
+        }
+        hideLoading()
     }
 
 
@@ -88,78 +141,14 @@ class ProfileFragment : Fragment(), BaseView {
 
     }
 
-    private fun getPermissions() {
-        //verificar se o usuario já tem essas permissões
-        isThereCameraPermission = ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
 
-        isThereGalleryPermission = ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.READ_MEDIA_IMAGES
-        ) == PackageManager.PERMISSION_GRANTED
 
-        //Lista de permissões negadas
-
-        val listPermissionsDenied = mutableListOf<String>()
-
-        if(!isThereCameraPermission){
-            listPermissionsDenied.add(Manifest.permission.CAMERA)
-        }
-        if(!isThereGalleryPermission){
-            listPermissionsDenied.add(Manifest.permission.READ_MEDIA_IMAGES)
-        }
-
-        if(listPermissionsDenied.isNotEmpty()){
-            //Solicitar ao usuario apenas a lista das permissões negadas
-            val gerenciadorPermissoes = registerForActivityResult(
-                ActivityResultContracts.RequestMultiplePermissions()
-            ){permissoes ->
-                isThereCameraPermission = permissoes[Manifest.permission.CAMERA] ?: isThereCameraPermission
-                isThereGalleryPermission = permissoes[Manifest.permission.READ_MEDIA_IMAGES] ?: isThereGalleryPermission
-
-                if(isThereCameraPermission){
-                    listPermissionsDenied.remove(Manifest.permission.CAMERA)
-                }
-
-                if(isThereGalleryPermission){
-                    listPermissionsDenied.remove(Manifest.permission.READ_MEDIA_IMAGES)
-                }
-            }
-
-            gerenciadorPermissoes.launch(listPermissionsDenied.toTypedArray())
-        }
-    }
-
-    private fun getInitialDataUser() {
+    private fun getUserData(idUser: String?) {
         if(idUser != null){
-            showLoading()
-
-            firebaseFirestore
-                .collection("users")
-                .document(idUser!!)
-                .get()
-                .addOnSuccessListener{ documentSnapshot ->
-                    val dadosUsuarios = documentSnapshot.data
-                    if (dadosUsuarios != null){
-                        val name = dadosUsuarios["name"] as String
-                        val photo = dadosUsuarios["photo"] as String
-
-                        binding.editTextNameProfile.setText(name)
-                        if(photo.isNotEmpty()){
-                            Glide
-                                .with(this)
-                                .load(photo)
-                                .into(binding.imageProfile)
-                        }
-
-                        hideLoading()
-                    }
-                }
+            userViewModel.getUserData(idUser)
         }
-
     }
+
     private fun uploadFirebaseStorage(uri: Uri) {
         if(idUser != null){
             showLoading()
@@ -189,19 +178,11 @@ class ProfileFragment : Fragment(), BaseView {
         }
     }
 
-    override fun showLoading(type: String) {
-        binding.pbProfile.visibility = View.VISIBLE
-        binding.btnUpdateProfile.isEnabled = false
-        binding.imageProfile.isEnabled = false
-    }
 
-    override fun hideLoading(type: String) {
-        binding.pbProfile.visibility = View.GONE
-        binding.btnUpdateProfile.isEnabled = true
-        binding.imageProfile.isEnabled = true
-    }
 
-    override fun initViews() {
+
+
+    fun initViews() {
         binding.imageProfile.setOnClickListener {
             if(isThereGalleryPermission){
                 galleryManager.launch("image/*")
@@ -249,5 +230,61 @@ class ProfileFragment : Fragment(), BaseView {
                 .create()
                 .show()
         }
+    }
+
+    private fun getPermissions() {
+        //verificar se o usuario já tem essas permissões
+        isThereCameraPermission = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+        isThereGalleryPermission = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.READ_MEDIA_IMAGES
+        ) == PackageManager.PERMISSION_GRANTED
+
+        //Lista de permissões negadas
+
+        val listPermissionsDenied = mutableListOf<String>()
+
+        if(!isThereCameraPermission){
+            listPermissionsDenied.add(Manifest.permission.CAMERA)
+        }
+        if(!isThereGalleryPermission){
+            listPermissionsDenied.add(Manifest.permission.READ_MEDIA_IMAGES)
+        }
+
+        if(listPermissionsDenied.isNotEmpty()){
+            //Solicitar ao usuario apenas a lista das permissões negadas
+            val gerenciadorPermissoes = registerForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ){permissoes ->
+                isThereCameraPermission = permissoes[Manifest.permission.CAMERA] ?: isThereCameraPermission
+                isThereGalleryPermission = permissoes[Manifest.permission.READ_MEDIA_IMAGES] ?: isThereGalleryPermission
+
+                if(isThereCameraPermission){
+                    listPermissionsDenied.remove(Manifest.permission.CAMERA)
+                }
+
+                if(isThereGalleryPermission){
+                    listPermissionsDenied.remove(Manifest.permission.READ_MEDIA_IMAGES)
+                }
+            }
+
+            gerenciadorPermissoes.launch(listPermissionsDenied.toTypedArray())
+        }
+    }
+
+    fun showLoading() {
+        binding.pbProfile.visibility = View.VISIBLE
+        binding.btnUpdateProfile.isEnabled = false
+        binding.imageProfile.isEnabled = false
+    }
+
+    fun hideLoading() {
+        binding.pbProfile.visibility = View.GONE
+        binding.btnUpdateProfile.isEnabled = true
+        binding.imageProfile.isEnabled = true
     }
 }

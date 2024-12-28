@@ -3,6 +3,7 @@ package com.rgos_developer.tmdbapp.presentation.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,16 +16,17 @@ import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.rgos_developer.tmdbapp.domain.models.User
 import com.rgos_developer.tmdbapp.utils.GeneralConstants
 import com.rgos_developer.tmdbapp.utils.showMessage
 import com.rgos_developer.tmdbapp.presentation.activities.MovieDetailActivity
 import com.rgos_developer.tmdbapp.databinding.FragmentHomeBinding
+import com.rgos_developer.tmdbapp.domain.common.ResultState
 import com.rgos_developer.tmdbapp.presentation.adapters.PopularMoviesItemAdapter
 import com.rgos_developer.tmdbapp.presentation.adapters.SliderAdapter
 import com.rgos_developer.tmdbapp.presentation.adapters.UpcomingMoviesItemAdapter
 import com.rgos_developer.tmdbapp.presentation.viewModels.MovieViewModel
+import com.rgos_developer.tmdbapp.presentation.viewModels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -34,7 +36,7 @@ class HomeFragment : Fragment(){
     private lateinit var binding: FragmentHomeBinding
     //instsances firebase
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var firebaseFirestore: FirebaseFirestore
+
     //instsances slider
     private val sliderHandler = Handler()
     private val sliderRunnable = Runnable {
@@ -48,6 +50,7 @@ class HomeFragment : Fragment(){
     private var user: User? = null
     //ViewModel
     private lateinit var movieViewModel: MovieViewModel
+    private lateinit var userViewModel: UserViewModel
 
 
     override fun onCreateView(
@@ -56,7 +59,7 @@ class HomeFragment : Fragment(){
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         firebaseAuth = FirebaseAuth.getInstance()
-        firebaseFirestore =  FirebaseFirestore.getInstance()
+
 
         //incializações de views e banners
         initViews()
@@ -64,69 +67,65 @@ class HomeFragment : Fragment(){
 
         //ViewModel//
         movieViewModel = ViewModelProvider(this)[MovieViewModel::class.java]
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
-        //busca de dados
-        getUser()
+
         setupMovieDataObservers()
+        setupUserObservers()
 
+        getUserData()
         return binding.root
     }
 
-    override fun onPause() {
-        super.onPause()
-        sliderHandler.removeCallbacks(sliderRunnable)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        sliderHandler.postDelayed(sliderRunnable, 3000)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        sliderHandler.removeCallbacks(sliderRunnable)
-    }
-
-    private fun getUser() : User {
-        val idUser = firebaseAuth.currentUser?.uid
-
-        val user = User()
-        if(idUser != null){
-            firebaseFirestore
-                .collection("users")
-                .document(idUser)
-                .get()
-                .addOnSuccessListener {document ->
-                    val data = document.data
-                    if(data != null){
-                        val name = data["name"] as String
-                        val email = data["email"] as String
-                        val photo = data["photo"] as String
-
-                        user.id = idUser
-                        user.name = name
-                        user.email = email
-                        user.photo = photo
-
-
-
-                        binding.textNameUser.text = name
-                        binding.textEmailUser.text = email
-
-
-                        if(photo.isNotEmpty()){
-                            context?.let {
-                                Glide
-                                    .with(it)
-                                    .load(photo)
-                                    .into(binding.imageProfile)
-                            }
-                        }
-                    }
+    private fun setupUserObservers() {
+        userViewModel.getUserState.observe(viewLifecycleOwner){ state ->
+            when (state) {
+                is ResultState.Loading -> showLoadingUserInformation()
+                is ResultState.Success -> displayUser(state.value)
+                is ResultState.Error -> {
+                    handleError(state.exception)
                 }
+            }
         }
+    }
 
-        return user
+    private fun handleError(error: Exception) {
+        binding.progressBarUser.visibility = View.GONE
+        binding.textNameUser.text = "Erro ao buscar dados do usuário"
+        binding.textEmailUser.text = "Erro ao buscar dados do usuário"
+        showMessage(error.message.toString())
+    }
+
+    private fun showLoadingUserInformation() {
+        binding.progressBarUser.visibility = View.VISIBLE
+    }
+
+    private fun displayUser(data: User) {
+        val name = data.name
+        val email = data.email
+        val photo = data.photo
+
+        binding.textNameUser.text = name
+        binding.textEmailUser.text = email
+
+
+        if(photo.isNotEmpty()){
+            context?.let {
+                Glide
+                    .with(it)
+                    .load(photo)
+                    .into(binding.imageProfile)
+            }
+        }
+        binding.progressBarUser.visibility = View.GONE
+    }
+
+    private fun getUserData() {
+        val idUser = firebaseAuth.currentUser?.uid
+        Log.i("teste_idUser", "$idUser")
+        if(idUser != null){
+            userViewModel.getUserData(idUser)
+        }
     }
 
     private fun setupMovieDataObservers() {
@@ -230,5 +229,20 @@ class HomeFragment : Fragment(){
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sliderHandler.removeCallbacks(sliderRunnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sliderHandler.postDelayed(sliderRunnable, 3000)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sliderHandler.removeCallbacks(sliderRunnable)
     }
 }

@@ -30,8 +30,8 @@ object FirebaseModule {
     }
 
     @Provides
-    fun provideUserRepository(firestore: FirebaseFirestore) : UserRepository {
-        return UserRepositoryImpl(firestore)
+    fun provideUserRepository(firestore: FirebaseFirestore, storage: FirebaseStorage) : UserRepository {
+        return UserRepositoryImpl(firestore, storage)
     }
 
     @Provides
