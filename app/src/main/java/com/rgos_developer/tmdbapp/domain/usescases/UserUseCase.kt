@@ -1,6 +1,7 @@
 package com.rgos_developer.tmdbapp.domain.usescases
 
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.storage.UploadTask
 import com.rgos_developer.tmdbapp.domain.common.ResultState
 import com.rgos_developer.tmdbapp.domain.models.User
@@ -25,32 +26,25 @@ class UserUseCase @Inject constructor(
         }
     }
 
-    suspend fun updateUserProfile(userId: String, user: User, uriLocal: Uri?): ResultState<String> {
-        return try {
-            if(userId.isNotEmpty()){
+    suspend fun updateUserProfile(user: User, uriLocal: Uri?): ResultState<String> {
+        try {
+            if(user.id.isNotEmpty()){
                 if(uriLocal != null){
                     val url = addPhotoUser(user.id, uriLocal)
-
                     if(url is ResultState.Success){
-                        val newUser = User(
-                            id = user.id,
-                            name = user.name,
-                            email = user.email,
-                            photo = url.toString()
-                        )
-
-                        repository.updateUserProfile(user.id, userToMap(newUser))
+                        val newUser = user.copy(photo = url.value)
+                        return repository.updateUserProfile(user.id, userToMap(newUser))
                     }else{
-                        return ResultState.Error(Exception("Erro ao foto do perfil"))
+                        return ResultState.Error(Exception("Erro ao adicionar foto do perfil"))
                     }
                 }else{
-                    repository.updateUserProfile(userId, userToMap(user))
+                    return repository.updateUserProfile(user.id, userToMap(user))
                 }
             }else{
-                ResultState.Error(Exception("Informe um ID válido"))
+                return ResultState.Error(Exception("Informe um ID válido"))
             }
         }catch (e: Exception){
-            ResultState.Error(e)
+            return ResultState.Error(e)
         }
     }
 
@@ -148,7 +142,7 @@ class UserUseCase @Inject constructor(
             "id" to user.id,
             "name" to user.name,
             "email" to user.email,
-            "photoUrl" to user.photo
+            "photo" to user.photo
         )
     }
 }

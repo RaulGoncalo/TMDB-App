@@ -25,6 +25,9 @@ class UserViewModel @Inject constructor(
     private val _updateUserState = MutableLiveData<ResultState<String>>()
     val updateUserState: LiveData<ResultState<String>> get() = _updateUserState
 
+    private val _addPhotoUser = MutableLiveData<ResultState<String>>()
+    val addPhotoUser: LiveData<ResultState<String>> get() = _addPhotoUser
+
     private val _listFavoritesMovies = MutableLiveData<ResultState<List<MoviePresentationModel>>>()
     val listFavoritesMovies: LiveData<ResultState<List<MoviePresentationModel>>> get() = _listFavoritesMovies
 
@@ -48,7 +51,8 @@ class UserViewModel @Inject constructor(
     fun updateUserData(user: User, uriLocal: Uri?) {
         viewModelScope.launch {
             _updateUserState.value = ResultState.Loading
-            useCase.updateUserProfile(user.id, user, uriLocal)
+            val result = useCase.updateUserProfile(user, uriLocal)
+            _updateUserState.value = result
         }
     }
 

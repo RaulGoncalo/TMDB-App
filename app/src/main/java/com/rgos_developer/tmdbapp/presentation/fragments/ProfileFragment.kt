@@ -32,12 +32,10 @@ class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     //Firebase
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var firebaseFirestore: FirebaseFirestore
-    private lateinit var firebaseStorage: FirebaseStorage
     //User data
     private var idUser: String? = null
-    private var updatedData = mutableMapOf<String, String>()
     private var uriLocalImage: Uri? = null
+    private var currentUser: User? = null
     //Permissons
     private var isThereCameraPermission = false
     private var isThereGalleryPermission = false
@@ -49,19 +47,18 @@ class ProfileFragment : Fragment() {
             binding.imageProfile.setImageURI(uri)
             uriLocalImage = uri
         }else{
-            requireActivity().showMessage("Nenhuma imagem selecionada")
+            showMessage("Nenhuma imagem selecionada")
         }
     }
 
     private lateinit var userViewModel: UserViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         firebaseAuth = FirebaseAuth.getInstance()
-        firebaseFirestore = FirebaseFirestore.getInstance()
-        firebaseStorage = FirebaseStorage.getInstance()
 
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
@@ -89,30 +86,17 @@ class ProfileFragment : Fragment() {
         userViewModel.updateUserState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ResultState.Loading -> showLoading()
-                is ResultState.Success -> showMessage(state.value)
+                is ResultState.Success -> {
+                    hideLoading()
+                    showMessage(state.value)
+                }
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
         }
-
-        /*userViewModel.addPhotoUserState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is ResultState.Loading -> {
-
-                }
-
-                is ResultState.Success -> {
-
-                }
-
-                is ResultState.Error -> {
-
-                }
-            }
-        }*/
-
     }
 
     private fun setDisplayUser(user: User) {
+        currentUser = user
         binding.editTextNameProfile.setText(user.name)
         if(user.photo.isNotEmpty()){
             Glide
@@ -123,25 +107,25 @@ class ProfileFragment : Fragment() {
         hideLoading()
     }
 
+    private fun updateDataProfile() {
+        val newName = binding.editTextNameProfile.text.toString()
+        if(newName.isNotEmpty()){
+            if(currentUser != null){
+                val newUser = User(
+                    id = currentUser!!.id,
+                    email = currentUser!!.email,
+                    name = newName,
+                    photo = currentUser!!.photo
+                )
 
-    private fun updateDataProfile(idUser: String, updatedData: MutableMap<String, String>) {
-        showLoading()
-        firebaseFirestore
-            .collection("users")
-            .document(idUser)
-            .update(updatedData as Map<String, Any>)
-            .addOnSuccessListener {
-                requireActivity().showMessage("Sucesso ao atualizar perfil")
-                hideLoading()
+                userViewModel.updateUserData(newUser, uriLocalImage)
+            }else{
+                showMessage("Erro ao buscar usuário atual")
             }
-            .addOnFailureListener {
-                requireActivity().showMessage("Erro ao atualizar perfil")
-                hideLoading()
-            }
-
+        }else{
+            showMessage("Preencha seu nome")
+        }
     }
-
-
 
     private fun getUserData(idUser: String?) {
         if(idUser != null){
@@ -149,68 +133,18 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun uploadFirebaseStorage(uri: Uri) {
-        if(idUser != null){
-            showLoading()
-            firebaseStorage
-                .getReference("photos")
-                .child("users")
-                .child(idUser!!)
-                .child("profile.jpg")
-                .putFile(uri)
-                .addOnSuccessListener {task ->
-                    requireActivity().showMessage("Sucesso ao fazer upload da imagem")
-                    task
-                        .metadata
-                        ?.reference
-                        ?.downloadUrl
-                        ?.addOnSuccessListener { url ->
-                            updatedData["photo"] =  url.toString()
-                            updateDataProfile(idUser!!, updatedData) // Atualiza perfil só após o upload bem-sucedido
-                            hideLoading()
-                        }
-                }
-                .addOnFailureListener {
-                    requireActivity().showMessage("Erro ao fazer upload da imagem")
-                }
-
-
-        }
-    }
-
-
-
-
-
     fun initViews() {
         binding.imageProfile.setOnClickListener {
             if(isThereGalleryPermission){
                 galleryManager.launch("image/*")
             }else{
-                requireActivity().showMessage("Nenhuma imagem selecionada")
+                showMessage("Nenhuma imagem selecionada")
                 getPermissions()
             }
         }
 
         binding.btnUpdateProfile.setOnClickListener {
-            val newName = binding.editTextNameProfile.text.toString()
-            if(newName.isNotEmpty()){
-                updatedData["name"] = newName
-
-                if(idUser != null){
-                    if (uriLocalImage != null) {
-                        // Se há uma imagem selecionada, faz o upload primeiro
-                        uploadFirebaseStorage(uriLocalImage!!)
-                    } else {
-                        // Se não há imagem, atualiza apenas o nome
-                        updateDataProfile(idUser!!, updatedData)
-                    }
-                }else{
-                    requireActivity().showMessage("Erro ao buscar id do usuário")
-                }
-            }else{
-                requireActivity().showMessage("Preencha seu nome")
-            }
+            updateDataProfile()
         }
 
         binding.btnSignOut.setOnClickListener {
@@ -276,13 +210,13 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    fun showLoading() {
+    private fun showLoading() {
         binding.pbProfile.visibility = View.VISIBLE
         binding.btnUpdateProfile.isEnabled = false
         binding.imageProfile.isEnabled = false
     }
 
-    fun hideLoading() {
+    private fun hideLoading() {
         binding.pbProfile.visibility = View.GONE
         binding.btnUpdateProfile.isEnabled = true
         binding.imageProfile.isEnabled = true

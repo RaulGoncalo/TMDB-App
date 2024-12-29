@@ -35,7 +35,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun updateUserProfile(userId: String, data: Map<String, Any>): ResultState<String> {
         return try {
-            firestore.collection("users").document(userId).update(data)
+            firestore.collection("users").document(userId).update(data).await()
             ResultState.Success("Usuário atualizado com sucesso")
         } catch (e: FirebaseException){
             ResultState.Error(Exception("Erro ao atualizar o usuário: ${e.message}"))
