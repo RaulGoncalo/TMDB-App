@@ -211,14 +211,20 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showLoading() {
-        binding.pbProfile.visibility = View.VISIBLE
+        binding.loadingOverlay.visibility = View.VISIBLE
         binding.btnUpdateProfile.isEnabled = false
+        binding.btnUpdateProfile.isFocusable = true
+        binding.btnSignOut.isEnabled = false
         binding.imageProfile.isEnabled = false
+        binding.editTextNameProfile.isEnabled = false
     }
 
     private fun hideLoading() {
-        binding.pbProfile.visibility = View.GONE
+        binding.loadingOverlay.visibility = View.GONE
         binding.btnUpdateProfile.isEnabled = true
+        binding.btnUpdateProfile.isFocusable = false
+        binding.btnSignOut.isEnabled = true
         binding.imageProfile.isEnabled = true
+        binding.editTextNameProfile.isEnabled = true
     }
 }
