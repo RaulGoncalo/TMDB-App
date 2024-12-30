@@ -9,7 +9,7 @@
         app:cnb_iconColor="@color/white" />
     <item
         android:id="@+id/favorites"
-        android:icon="@drawable/ic_favorite_24"
+        android:icon="@drawable/ic_favorite_border_24"
         android:title="@string/ic_favorite"
         app:cnb_backgroundColor="@color/orange"
         app:cnb_iconColor="@color/white" />
