@@ -9,13 +9,13 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.firestore.FirebaseFirestore
-import com.rgos_developer.tmdbapp.data.dto.User
+import com.rgos_developer.tmdbapp.domain.models.User
 import com.rgos_developer.tmdbapp.utils.showMessage
-import com.rgos_developer.tmdbapp.databinding.ActivitySingUpBinding
+import com.rgos_developer.tmdbapp.databinding.ActivitySignUpBinding
 
-class SingUpActivity : AppCompatActivity() {
-    private val binding: ActivitySingUpBinding by lazy {
-        ActivitySingUpBinding.inflate(layoutInflater)
+class SignUpActivity : AppCompatActivity() {
+    private val binding: ActivitySignUpBinding by lazy {
+        ActivitySignUpBinding.inflate(layoutInflater)
     }
 
     private val firebaseAuth by lazy {
@@ -51,7 +51,7 @@ class SingUpActivity : AppCompatActivity() {
     private fun handleUserSignUp() {
         // Exibir a ProgressBar
         showProgress(true)
-        firebaseAuth
+        val testeLogin = firebaseAuth
             .createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { res ->
                 if (res.isSuccessful) {
@@ -72,6 +72,11 @@ class SingUpActivity : AppCompatActivity() {
                 handleFirebaseAuthError(error)
                 showProgress(false)
             }
+
+        testeLogin.addOnCanceledListener {
+            showProgress(false)
+            showMessage("Erro ao obter o ID do usuário. Tente novamente.")
+        }
     }
 
     private fun saveUserToFirestore(user: User) {
@@ -119,7 +124,7 @@ class SingUpActivity : AppCompatActivity() {
     }
 
     private fun navigateToLoginActivity() {
-        val intent = Intent(applicationContext, LoginActivity::class.java)
+        val intent = Intent(applicationContext, SignInActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)

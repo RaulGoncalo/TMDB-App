@@ -28,18 +28,18 @@
         <activity
             android:name=".presentation.activities.ForgetPasswordActivity"
             android:exported="false"
-            android:parentActivityName=".presentation.activities.LoginActivity"
+            android:parentActivityName=".presentation.activities.SignInActivity"
             android:windowSoftInputMode="stateVisible" />
         <activity
-            android:name=".presentation.activities.SingUpActivity"
+            android:name=".presentation.activities.SignUpActivity"
             android:exported="false"
-            android:parentActivityName=".presentation.activities.LoginActivity"
+            android:parentActivityName=".presentation.activities.SignInActivity"
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".presentation.activities.MovieDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.activities.LoginActivity"
+            android:name=".presentation.activities.SignInActivity"
             android:exported="false"
             android:parentActivityName=".presentation.activities.IntroActivity" />
         <activity

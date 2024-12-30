@@ -19,9 +19,11 @@ import com.rgos_developer.tmdbapp.utils.GeneralConstants
 import com.rgos_developer.tmdbapp.utils.MovieDetailConstants
 import com.rgos_developer.tmdbapp.presentation.BaseView
 import com.rgos_developer.tmdbapp.databinding.ActivityMovieDetailBinding
+import com.rgos_developer.tmdbapp.domain.common.ResultState
 import com.rgos_developer.tmdbapp.presentation.models.MovieCreditsPresentationModel
 import com.rgos_developer.tmdbapp.presentation.models.MovieDetailsPresentationModel
 import com.rgos_developer.tmdbapp.presentation.viewModels.MovieDetailsCreditsViewModel
+import com.rgos_developer.tmdbapp.presentation.viewModels.UserViewModel
 import com.rgos_developer.tmdbapp.utils.showMessage
 import dagger.hilt.android.AndroidEntryPoint
 import eightbitlab.com.blurview.RenderScriptBlur
@@ -36,7 +38,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private var idMovie: Long? = null
 
     private lateinit var viewModel: MovieDetailsCreditsViewModel
-    //private val movieDetailConstroller = MovieDetailConstroller(RetrofitClient.moviesApi, this)
+    private lateinit var userViewModel: UserViewModel
 
     private var genreItemAdapter: GenreItemAdapter? = null
     private var castItemAdapter: CastItemAdapter? = null
@@ -49,6 +51,7 @@ class MovieDetailActivity : AppCompatActivity() {
         initViews()
 
         viewModel = ViewModelProvider(this)[MovieDetailsCreditsViewModel::class.java]
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
         setupMovieDataObservers()
         fetchMovieData()
@@ -81,6 +84,14 @@ class MovieDetailActivity : AppCompatActivity() {
 
         viewModel.errorMessage.observe(this) { message ->
             message?.let { showMessage(it) }
+        }
+
+        userViewModel.isFavoriteMovie.observe(this) { state ->
+            when(state) {
+                is ResultState.Loading -> {}
+                is ResultState.Success -> {}
+                is ResultState.Error -> {}
+            }
         }
     }
 
@@ -146,7 +157,11 @@ class MovieDetailActivity : AppCompatActivity() {
 
         //favoritos
         binding.btnFavoriteMovie.setOnClickListener {
-
+            handleFavoriteButtonClick()
         }
+    }
+
+    private fun handleFavoriteButtonClick() {
+        TODO("Not yet implemented")
     }
 }

@@ -7,12 +7,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.rgos_developer.tmdbapp.utils.showMessage
-import com.rgos_developer.tmdbapp.databinding.ActivityLoginBinding
+import com.rgos_developer.tmdbapp.databinding.ActivitySignInBinding
 
-class LoginActivity : AppCompatActivity() {
+class SignInActivity : AppCompatActivity() {
 
-    private val binding: ActivityLoginBinding by lazy {
-        ActivityLoginBinding.inflate(layoutInflater)
+    private val binding: ActivitySignInBinding by lazy {
+        ActivitySignInBinding.inflate(layoutInflater)
     }
 
     private lateinit var email: String
@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun goToSignUp() {
         startActivity(
-            Intent(this, SingUpActivity::class.java)
+            Intent(this, SignUpActivity::class.java)
         )
     }
 
