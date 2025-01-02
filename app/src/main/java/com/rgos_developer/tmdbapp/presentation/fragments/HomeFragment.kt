@@ -19,12 +19,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.rgos_developer.tmdbapp.domain.models.User
 import com.rgos_developer.tmdbapp.utils.GeneralConstants
 import com.rgos_developer.tmdbapp.utils.showMessage
-import com.rgos_developer.tmdbapp.presentation.activities.MovieDetailActivity
+import com.rgos_developer.tmdbapp.presentation.activities.MovieDetailsActivity
 import com.rgos_developer.tmdbapp.databinding.FragmentHomeBinding
 import com.rgos_developer.tmdbapp.domain.common.ResultState
-import com.rgos_developer.tmdbapp.presentation.adapters.PopularMoviesItemAdapter
+import com.rgos_developer.tmdbapp.presentation.adapters.MovieItemAdapter
 import com.rgos_developer.tmdbapp.presentation.adapters.SliderAdapter
-import com.rgos_developer.tmdbapp.presentation.adapters.UpcomingMoviesItemAdapter
+import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
 import com.rgos_developer.tmdbapp.presentation.viewModels.MovieViewModel
 import com.rgos_developer.tmdbapp.presentation.viewModels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,8 +43,8 @@ class HomeFragment : Fragment(){
         binding.viewPagerSlider.currentItem = binding.viewPagerSlider.currentItem + 1
     }
     //instsances adapters
-    private var popularMoviesItemAdapter: PopularMoviesItemAdapter? = null
-    private var upcomingMoviesItemAdapter: UpcomingMoviesItemAdapter? = null
+    private var popularMoviesItemAdapter: MovieItemAdapter? = null
+    private var upcomingMoviesItemAdapter: MovieItemAdapter? = null
     private var sliderAdapter: SliderAdapter? = null
     //user
     private var user: User? = null
@@ -161,9 +161,9 @@ class HomeFragment : Fragment(){
         }
     }
 
-    private fun openMovieDetailActivity(idMovie: Long) {
-        val intent = Intent(activity, MovieDetailActivity::class.java)
-        intent.putExtra(GeneralConstants.PUT_EXTRAS_ID_MOVIE, idMovie)
+    private fun openMovieDetailActivity(movie: MoviePresentationModel) {
+        val intent = Intent(activity, MovieDetailsActivity::class.java)
+        intent.putExtra(GeneralConstants.PUT_EXTRAS_MOVIE, movie)
         startActivity(intent)
     }
 
@@ -212,11 +212,12 @@ class HomeFragment : Fragment(){
 
     private fun initViews() {
         with(binding) {
-            popularMoviesItemAdapter = PopularMoviesItemAdapter() { idMovie ->
-                openMovieDetailActivity(idMovie)
+            popularMoviesItemAdapter = MovieItemAdapter() { movie ->
+                openMovieDetailActivity(movie)
             }
-            upcomingMoviesItemAdapter = UpcomingMoviesItemAdapter() { idMovie ->
-                openMovieDetailActivity(idMovie)
+
+            upcomingMoviesItemAdapter = MovieItemAdapter() { movie ->
+                openMovieDetailActivity(movie)
             }
 
             rvPopularMovies.apply {

@@ -18,7 +18,7 @@ class MovieDetailConstants {
 
 class GeneralConstants{
     companion object {
-        const val PUT_EXTRAS_ID_MOVIE = "idMovie"
+        const val PUT_EXTRAS_MOVIE = "movie"
     }
 }
 

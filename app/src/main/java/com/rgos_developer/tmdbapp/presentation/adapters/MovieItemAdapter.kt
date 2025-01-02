@@ -1,6 +1,7 @@
 package com.rgos_developer.tmdbapp.presentation.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -12,17 +13,18 @@ import com.bumptech.glide.request.RequestOptions
 import com.rgos_developer.tmdbapp.databinding.ViewholderMovieItemBinding
 import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
 
-class UpcomingMoviesItemAdapter(
-    private val onClickItem: (Long) -> Unit
-): RecyclerView.Adapter<UpcomingMoviesItemAdapter.MovieItemViewHolder>() {
+class MovieItemAdapter(
+    private val onClickItem: (MoviePresentationModel) -> Unit
+): RecyclerView.Adapter<MovieItemAdapter.MovieItemViewHolder>() {
 
     val listMovies = mutableListOf<MoviePresentationModel>()
 
     private var context: Context? = null
 
     fun loadList(newListMovies: List<MoviePresentationModel>){
-        listMovies.addAll(newListMovies)
-        notifyDataSetChanged()
+        listMovies.clear() // Limpa a lista existente
+        listMovies.addAll(newListMovies) // Adiciona os novos itens
+        notifyDataSetChanged() // Notifica o Adapter sobre as mudanças
     }
 
     inner class MovieItemViewHolder(val binding: ViewholderMovieItemBinding) : ViewHolder(binding.root){
@@ -41,7 +43,7 @@ class UpcomingMoviesItemAdapter(
             binding.nameTxt.setText(movie.title)
 
             binding.root.setOnClickListener {
-                onClickItem(movie.id)
+                onClickItem(movie)
             }
         }
     }
@@ -59,6 +61,7 @@ class UpcomingMoviesItemAdapter(
     override fun onBindViewHolder(holder: MovieItemViewHolder, position: Int) {
         holder.bind(listMovies[position])
     }
+
 
     override fun getItemCount() = listMovies.size
 }
