@@ -63,6 +63,7 @@ class MovieDetailsActivity : AppCompatActivity() {
         authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
         setupMovieDataObservers()
+        setupObserversUser()
         authViewModel.getCurrentUserId()
     }
 
@@ -101,15 +102,16 @@ class MovieDetailsActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
-
+    private fun setupObserversUser() {
         userViewModel.isFavoriteMovie.observe(this) { state ->
-            when(state) {
-                is ResultState.Loading -> showLoading()
+            when (state) {
+                is ResultState.Loading -> showLoadingFavorite()
                 is ResultState.Success -> {
                     isFavoriteMovie = state.value
                     handleDisplayFavorite(state.value)
-                    hideLoading()
+                    hideLoadingFavorite()
                 }
                 is ResultState.Error -> {
                     showMessage(state.exception.message.toString())
@@ -117,12 +119,12 @@ class MovieDetailsActivity : AppCompatActivity() {
             }
         }
 
-        userViewModel.removeFavoriteMovieState.observe(this){state ->
-            when(state) {
-                is ResultState.Loading -> showLoading()
+        userViewModel.removeFavoriteMovieState.observe(this) { state ->
+            when (state) {
+                is ResultState.Loading -> showLoadingFavorite()
                 is ResultState.Success -> {
                     showMessage(state.value)
-                    hideLoading()
+                    hideLoadingFavorite()
                 }
                 is ResultState.Error -> {
                     showMessage(state.exception.message.toString())
@@ -130,12 +132,12 @@ class MovieDetailsActivity : AppCompatActivity() {
             }
         }
 
-        userViewModel.addFavoriteMovieState.observe(this){state ->
-            when(state) {
-                is ResultState.Loading -> showLoading()
+        userViewModel.addFavoriteMovieState.observe(this) { state ->
+            when (state) {
+                is ResultState.Loading -> showLoadingFavorite()
                 is ResultState.Success -> {
                     showMessage(state.value)
-                    hideLoading()
+                    hideLoadingFavorite()
                 }
                 is ResultState.Error -> {
                     showMessage(state.exception.message.toString())
@@ -143,13 +145,12 @@ class MovieDetailsActivity : AppCompatActivity() {
             }
         }
 
-        authViewModel.getCurrentUserId.observe(this){state ->
-            when(state){
-                is ResultState.Loading -> showLoading()
+        authViewModel.getCurrentUserId.observe(this) { state ->
+            when (state) {
+                is ResultState.Loading -> {}
                 is ResultState.Success -> {
                     userId = state.value
                     fetchMovieData()
-                    hideLoading()
                 }
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
@@ -186,6 +187,15 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     private fun displayMovieCredits(credits: MovieCreditsPresentationModel) {
         castItemAdapter?.addListCast(credits.cast)
+    }
+
+    private fun showLoadingFavorite() {
+        binding.pbFavorites.visibility = View.VISIBLE
+        binding.btnFavoriteMovie.visibility = View.GONE
+    }
+    private fun hideLoadingFavorite() {
+        binding.pbFavorites.visibility = View.GONE
+        binding.btnFavoriteMovie.visibility = View.VISIBLE
     }
 
     private fun showLoading() {
