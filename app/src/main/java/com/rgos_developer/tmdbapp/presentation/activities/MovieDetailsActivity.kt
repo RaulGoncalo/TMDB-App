@@ -3,7 +3,6 @@ package com.rgos_developer.tmdbapp.presentation.activities
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
@@ -13,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.google.firebase.auth.FirebaseAuth
 import com.rgos_developer.tmdbapp.R
 import com.rgos_developer.tmdbapp.presentation.adapters.CastItemAdapter
 import com.rgos_developer.tmdbapp.presentation.adapters.GenreItemAdapter
@@ -24,7 +22,7 @@ import com.rgos_developer.tmdbapp.presentation.models.MovieCreditsPresentationMo
 import com.rgos_developer.tmdbapp.presentation.models.MovieDetailsPresentationModel
 import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
 import com.rgos_developer.tmdbapp.presentation.viewModels.AuthViewModel
-import com.rgos_developer.tmdbapp.presentation.viewModels.MovieDetailsCreditsViewModel
+import com.rgos_developer.tmdbapp.presentation.viewModels.MovieViewModel
 import com.rgos_developer.tmdbapp.presentation.viewModels.UserViewModel
 import com.rgos_developer.tmdbapp.utils.showMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,9 +35,10 @@ class MovieDetailsActivity : AppCompatActivity() {
         ActivityMovieDetailsBinding.inflate(layoutInflater)
     }
 
-    private lateinit var movieViewModel: MovieDetailsCreditsViewModel
+    private lateinit var movieViewModel: MovieViewModel
     private lateinit var userViewModel: UserViewModel
     private lateinit var authViewModel: AuthViewModel
+
     private var genreItemAdapter: GenreItemAdapter? = null
     private var castItemAdapter: CastItemAdapter? = null
 
@@ -59,11 +58,12 @@ class MovieDetailsActivity : AppCompatActivity() {
 
         initViews()
 
-        movieViewModel = ViewModelProvider(this)[MovieDetailsCreditsViewModel::class.java]
+        movieViewModel = ViewModelProvider(this)[MovieViewModel::class.java]
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
         setupMovieDataObservers()
+        setupObserversUser()
         authViewModel.getCurrentUserId()
     }
 
@@ -77,75 +77,80 @@ class MovieDetailsActivity : AppCompatActivity() {
     }
 
     private fun setupMovieDataObservers() {
-        movieViewModel.movieDetails.observe(this) { details ->
-            details?.let {
-                displayMovieDetails(it)
-            }
-        }
-
-        movieViewModel.movieCredits.observe(this) { credits ->
-            credits?.let { displayMovieCredits(it) }
-        }
-
-        movieViewModel.isLoading.observe(this) { isLoading ->
-            if (isLoading) {
-                showLoading()
-            } else {
-                hideLoading()
-            }
-        }
-
-        movieViewModel.errorMessage.observe(this) { message ->
-            message?.let { showMessage(it) }
-        }
-
-        userViewModel.isFavoriteMovie.observe(this) { state ->
-            when(state) {
-                is ResultState.Loading -> showLoading()
-                is ResultState.Success -> {
-                    isFavoriteMovie = state.value
-                    handleDisplayFavorite(state.value)
-                    hideLoading()
-                }
-                is ResultState.Error -> {
-                    showMessage(state.exception.message.toString())
-                }
-            }
-        }
-
-        userViewModel.removeFavoriteMovieState.observe(this){state ->
-            when(state) {
-                is ResultState.Loading -> showLoading()
-                is ResultState.Success -> {
-                    showMessage(state.value)
-                    hideLoading()
-                }
-                is ResultState.Error -> {
-                    showMessage(state.exception.message.toString())
-                }
-            }
-        }
-
-        userViewModel.addFavoriteMovieState.observe(this){state ->
-            when(state) {
-                is ResultState.Loading -> showLoading()
-                is ResultState.Success -> {
-                    showMessage(state.value)
-                    hideLoading()
-                }
-                is ResultState.Error -> {
-                    showMessage(state.exception.message.toString())
-                }
-            }
-        }
-
-        authViewModel.getCurrentUserId.observe(this){state ->
+        movieViewModel.movieDetails.observe(this) { state ->
             when(state){
                 is ResultState.Loading -> showLoading()
                 is ResultState.Success -> {
+                    displayMovieDetails(state.value)
+                    hideLoading()
+                }
+                is ResultState.Error -> {
+                    showMessage(state.exception.message.toString())
+                }
+            }
+        }
+
+        movieViewModel.movieCredits.observe(this) { state ->
+            when(state){
+                is ResultState.Loading -> showLoading()
+                is ResultState.Success -> {
+                    displayMovieCredits(state.value)
+                    hideLoading()
+                }
+                is ResultState.Error -> {
+                    showMessage(state.exception.message.toString())
+                }
+            }
+        }
+    }
+
+    private fun setupObserversUser() {
+        userViewModel.isFavoriteMovie.observe(this) { state ->
+            when (state) {
+                is ResultState.Loading -> showLoadingFavorite()
+                is ResultState.Success -> {
+                    isFavoriteMovie = state.value
+                    handleDisplayFavorite(state.value)
+                    hideLoadingFavorite()
+                }
+                is ResultState.Error -> {
+                    showMessage(state.exception.message.toString())
+                }
+            }
+        }
+
+        userViewModel.removeFavoriteMovieState.observe(this) { state ->
+            when (state) {
+                is ResultState.Loading -> showLoadingFavorite()
+                is ResultState.Success -> {
+                    showMessage(state.value)
+                    hideLoadingFavorite()
+                }
+                is ResultState.Error -> {
+                    showMessage(state.exception.message.toString())
+                }
+            }
+        }
+
+        userViewModel.addFavoriteMovieState.observe(this) { state ->
+            when (state) {
+                is ResultState.Loading -> showLoadingFavorite()
+                is ResultState.Success -> {
+                    showMessage(state.value)
+                    hideLoadingFavorite()
+                }
+                is ResultState.Error -> {
+                    showMessage(state.exception.message.toString())
+                }
+            }
+        }
+
+        authViewModel.getCurrentUserId.observe(this) { state ->
+            when (state) {
+                is ResultState.Loading -> {}
+                is ResultState.Success -> {
                     userId = state.value
                     fetchMovieData()
-                    hideLoading()
                 }
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
@@ -182,6 +187,15 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     private fun displayMovieCredits(credits: MovieCreditsPresentationModel) {
         castItemAdapter?.addListCast(credits.cast)
+    }
+
+    private fun showLoadingFavorite() {
+        binding.pbFavorites.visibility = View.VISIBLE
+        binding.btnFavoriteMovie.visibility = View.GONE
+    }
+    private fun hideLoadingFavorite() {
+        binding.pbFavorites.visibility = View.GONE
+        binding.btnFavoriteMovie.visibility = View.VISIBLE
     }
 
     private fun showLoading() {
