@@ -56,11 +56,9 @@ class HomeFragment : Fragment(){
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        //incializações de views e banners
         initViews()
         initBanner()
 
-        //ViewModel//
         movieViewModel = ViewModelProvider(this)[MovieViewModel::class.java]
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
@@ -70,6 +68,41 @@ class HomeFragment : Fragment(){
         authViewModel.getCurrentUserId()
 
         return binding.root
+    }
+
+    private fun setupMovieDataObservers() {
+        movieViewModel.listPopularMovies.observe(viewLifecycleOwner){state ->
+            when(state){
+                is ResultState.Loading -> binding.pbPopularMovies.visibility = View.VISIBLE
+                is ResultState.Success -> {
+                    popularMoviesItemAdapter?.loadList(state.value)
+                    binding.pbPopularMovies.visibility = View.GONE
+                }
+                is ResultState.Error -> showMessage(state.exception.message.toString())
+            }
+        }
+
+        movieViewModel.listUpcomingMovies.observe(viewLifecycleOwner){state ->
+            when(state){
+                is ResultState.Loading -> binding.pbUpcomingMovies.visibility = View.VISIBLE
+                is ResultState.Success -> {
+                    upcomingMoviesItemAdapter?.loadList(state.value)
+                    binding.pbUpcomingMovies.visibility = View.GONE
+                }
+                is ResultState.Error -> showMessage(state.exception.message.toString())
+            }
+        }
+
+        movieViewModel.listTopRatedMovies.observe(viewLifecycleOwner){state ->
+            when(state){
+                is ResultState.Loading -> binding.progressBarSlider.visibility = View.VISIBLE
+                is ResultState.Success -> {
+                    sliderAdapter?.loadList(state.value)
+                    binding.progressBarSlider.visibility = View.GONE
+                }
+                is ResultState.Error -> showMessage(state.exception.message.toString())
+            }
+        }
     }
 
     private fun setupUserObservers() {
@@ -85,7 +118,7 @@ class HomeFragment : Fragment(){
 
         authViewModel.getCurrentUserId.observe(viewLifecycleOwner){state ->
             when(state){
-                is ResultState.Loading -> showLoading()
+                is ResultState.Loading -> showLoadingUserInformation()
                 is ResultState.Success -> {
                     userId = state.value
                     getUserData()
@@ -132,38 +165,7 @@ class HomeFragment : Fragment(){
         }
     }
 
-    private fun setupMovieDataObservers() {
-        movieViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                showLoading()
-            } else {
-                hideLoading()
-            }
-        }
-        movieViewModel.listPopularMovies.observe(viewLifecycleOwner){
-            if(it.isNotEmpty()){
-                popularMoviesItemAdapter?.loadList(it)
-            }else{
-                showMessage("Erro ao buscar filmes populares!")
-            }
-        }
 
-        movieViewModel.listUpcomingMovies.observe(viewLifecycleOwner){
-            if(it.isNotEmpty()){
-                upcomingMoviesItemAdapter?.loadList(it)
-            }else{
-                showMessage("Erro ao buscar filmes que estão por vim!")
-            }
-        }
-
-        movieViewModel.listTopRatedMovies.observe(viewLifecycleOwner){
-            if(it.isNotEmpty()){
-                sliderAdapter?.loadList(it)
-            }else{
-                showMessage("Erro ao buscar filmes mais votados!")
-            }
-        }
-    }
 
     private fun openMovieDetailActivity(movie: MoviePresentationModel) {
         val intent = Intent(activity, MovieDetailsActivity::class.java)
@@ -200,18 +202,6 @@ class HomeFragment : Fragment(){
                 sliderHandler.postDelayed(sliderRunnable, 3000)
             }
         })
-    }
-
-    private fun showLoading() {
-        binding.pbPopularMovies.visibility = View.VISIBLE
-        binding.pbUpcomingMovies.visibility = View.VISIBLE
-        binding.progressBarSlider.visibility = View.VISIBLE
-    }
-
-    private fun hideLoading() {
-        binding.pbPopularMovies.visibility = View.GONE
-        binding.pbUpcomingMovies.visibility = View.GONE
-        binding.progressBarSlider.visibility = View.GONE
     }
 
     private fun initViews() {

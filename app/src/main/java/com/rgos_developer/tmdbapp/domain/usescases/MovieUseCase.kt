@@ -1,6 +1,7 @@
 package com.rgos_developer.tmdbapp.domain.usescases
 
 import android.util.Log
+import com.rgos_developer.tmdbapp.domain.common.ResultState
 import com.rgos_developer.tmdbapp.domain.models.MovieDetailsDomainModel
 import com.rgos_developer.tmdbapp.domain.models.toGenrePresentationModel
 import com.rgos_developer.tmdbapp.domain.models.toMovieCreditsPresentationModel
@@ -13,59 +14,91 @@ import javax.inject.Inject
 
 class MovieUseCase @Inject constructor(private val repository: MovieRepository){
 
-    suspend fun getPopularMovies() : List<MoviePresentationModel>{
+    suspend fun getPopularMovies() : ResultState<List<MoviePresentationModel>> {
         return try {
-            repository.getPopularMovies().map {
-                it.toMoviePresationModel()
-            }
-        }catch (error: Exception){
-            error.printStackTrace()
-            emptyList()
-        }
-    }
+            val result = repository.getPopularMovies()
 
-    suspend fun getUpcomingMovies() : List<MoviePresentationModel>{
-        return try {
-            repository.getUpcomingMovies().map {
-                it.toMoviePresationModel()
-            }
-        }catch (error: Exception){
-            error.printStackTrace()
-            emptyList()
-        }
-    }
-
-    suspend fun getTopRatedMovies() : List<MoviePresentationModel>{
-        return try {
-            repository.getTopRatedMovies().map {
-                it.toMoviePresationModel()
-            }
-        }catch (error: Exception){
-            error.printStackTrace()
-            emptyList()
-        }
-    }
-
-    suspend fun getMovieDetails(idMovie: Long) : MovieDetailsPresentationModel? {
-        return try {
-            val movie = repository.getMovieDetails(idMovie)
-            if(movie != null){
-                formatMovieDetails(movie)
+            if(result is ResultState.Success){
+                ResultState.Success(
+                    result.value.map {
+                        it.toMoviePresationModel()
+                    }
+                )
+            }else if(result is ResultState.Error){
+                ResultState.Error(result.exception)
             }else{
-                null
+                ResultState.Error(Exception("Erro os buscar dados!"))
             }
         }catch (error: Exception){
-            error.printStackTrace()
-            null
+            ResultState.Error(error)
         }
     }
 
-    suspend fun getMovieCredits(idMovie: Long) : MovieCreditsPresentationModel? {
+    suspend fun getUpcomingMovies() : ResultState<List<MoviePresentationModel>>{
         return try {
-            repository.getMovieCredits(idMovie)?.toMovieCreditsPresentationModel()
+            val result = repository.getUpcomingMovies()
+            if(result is ResultState.Success){
+                ResultState.Success(
+                    result.value.map {
+                        it.toMoviePresationModel()
+                    }
+                )
+            }else if(result is ResultState.Error){
+                ResultState.Error(result.exception)
+            }else{
+                ResultState.Error(Exception("Erro os buscar dados!"))
+            }
         }catch (error: Exception){
-            error.printStackTrace()
-            null
+            ResultState.Error(error)
+        }
+    }
+
+    suspend fun getTopRatedMovies() : ResultState<List<MoviePresentationModel>>{
+        return try {
+            val result = repository.getTopRatedMovies()
+            if(result is ResultState.Success){
+                ResultState.Success(
+                    result.value.map {
+                        it.toMoviePresationModel()
+                    }
+                )
+            }else if(result is ResultState.Error){
+                ResultState.Error(result.exception)
+            }else{
+                ResultState.Error(Exception("Erro os buscar dados!"))
+            }
+        }catch (error: Exception){
+            ResultState.Error(error)
+        }
+    }
+
+    suspend fun getMovieDetails(idMovie: Long) : ResultState<MovieDetailsPresentationModel> {
+        return try {
+            val result = repository.getMovieDetails(idMovie)
+
+            if(result is ResultState.Success){
+                val movieDetails = formatMovieDetails(result.value)
+                ResultState.Success(movieDetails)
+            }else{
+                ResultState.Error(Exception("Erro os buscar dados!"))
+            }
+        }catch (error: Exception){
+            ResultState.Error(error)
+        }
+    }
+
+    suspend fun getMovieCredits(idMovie: Long) : ResultState<MovieCreditsPresentationModel> {
+        return try {
+            val result = repository.getMovieCredits(idMovie)
+
+            if(result is ResultState.Success){
+                val movieCredits = result.value.toMovieCreditsPresentationModel()
+                ResultState.Success(movieCredits)
+            }else{
+                ResultState.Error(Exception("Erro os buscar dados!"))
+            }
+        }catch (error: Exception){
+            ResultState.Error(error)
         }
     }
 
