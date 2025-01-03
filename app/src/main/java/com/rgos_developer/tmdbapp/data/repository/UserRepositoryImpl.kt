@@ -4,13 +4,11 @@ import android.net.Uri
 import com.google.firebase.FirebaseException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.UploadTask
 import com.rgos_developer.tmdbapp.domain.common.ResultState
 import com.rgos_developer.tmdbapp.domain.models.MovieDomainModel
 import com.rgos_developer.tmdbapp.domain.models.User
 import com.rgos_developer.tmdbapp.domain.repository.UserRepository
 import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
-import com.rgos_developer.tmdbapp.utils.showMessage
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -62,7 +60,14 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getFavoriteMovie(userId: String, movieId: Long): ResultState<MovieDomainModel> {
         return try {
-            val snapshot = firestore.collection("favorites").document(userId).collection("movies").document(movieId.toString()).get().await()
+            val snapshot = firestore
+                .collection("favorites")
+                .document(userId)
+                .collection("movies")
+                .document(movieId.toString())
+                .get()
+                .await()
+
             val favoriteMovie = snapshot.toObject(MovieDomainModel::class.java)
             return if (favoriteMovie != null) {
                 ResultState.Success(favoriteMovie)

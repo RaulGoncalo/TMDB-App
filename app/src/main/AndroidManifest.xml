@@ -36,7 +36,7 @@
             android:parentActivityName=".presentation.activities.SignInActivity"
             android:windowSoftInputMode="stateVisible" />
         <activity
-            android:name=".presentation.activities.MovieDetailActivity"
+            android:name=".presentation.activities.MovieDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.activities.SignInActivity"

@@ -78,15 +78,10 @@ class UserUseCase @Inject constructor(
     suspend fun isFavoriteMovie(userId: String, movieId: Long): ResultState<Boolean> {
         return try {
             if(userId.isNotEmpty()){
-                when (val result = repository.getFavoriteMovie(userId, movieId)) {
-                    is ResultState.Success -> {
-                        ResultState.Success(true)
-                    }
-
-                    is ResultState.Error -> {
-                        ResultState.Error(result.exception)
-                    }
-
+                val result = repository.getFavoriteMovie(userId, movieId)
+                when (result) {
+                    is ResultState.Success -> ResultState.Success(true)
+                    is ResultState.Error -> ResultState.Success(false)
                     else -> {
                         ResultState.Error(Exception("Erro desconhecido ao buscar filmes favoritos"))
                     }

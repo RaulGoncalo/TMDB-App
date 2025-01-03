@@ -14,7 +14,7 @@ import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
 
 class SliderAdapter(
     private val viewPager2: ViewPager2,
-    private val onClickItem: (Long) -> Unit
+    private val onClickItem: (MoviePresentationModel) -> Unit
 ) : RecyclerView.Adapter<SliderAdapter.SliderViewHolder>() {
 
     val sliderItems = mutableListOf<MoviePresentationModel>()
@@ -45,7 +45,7 @@ class SliderAdapter(
             }
 
             binding.root.setOnClickListener {
-                onClickItem(sliderItem.id)
+                onClickItem(sliderItem)
             }
         }
     }
