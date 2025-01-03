@@ -41,7 +41,6 @@
                 android:layout_marginTop="128dp"
                 app:placeholderTextColor="@color/yellow"
                 android:textColorHint="@color/white"
-                app:errorTextColor="@color/errorEditText"
                 app:cursorColor="@color/yellow"
                 app:hintTextColor="@color/yellow"
                 >
@@ -68,7 +67,6 @@
                 android:textColorHint="@color/white"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/white"
-                app:errorTextColor="@color/errorEditText"
                 app:cursorColor="@color/yellow"
                 app:hintTextColor="@color/yellow"
                 >
@@ -134,4 +132,15 @@
                 />
         </LinearLayout>
     </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/pbSignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

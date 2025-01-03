@@ -2,65 +2,86 @@ package com.rgos_developer.tmdbapp.presentation.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.rgos_developer.tmdbapp.utils.showMessage
 import com.rgos_developer.tmdbapp.databinding.ActivityForgetPasswordBinding
+import com.rgos_developer.tmdbapp.domain.common.ResultState
+import com.rgos_developer.tmdbapp.domain.common.ResultValidate
+import com.rgos_developer.tmdbapp.presentation.viewModels.AuthViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ForgetPasswordActivity : AppCompatActivity() {
     private val binding: ActivityForgetPasswordBinding by lazy {
         ActivityForgetPasswordBinding.inflate(layoutInflater)
     }
 
-    private val firebaseAuth: FirebaseAuth by lazy{
-        FirebaseAuth.getInstance()
-    }
+    private lateinit var authViewModel: AuthViewModel
 
-    private var email: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
+
+        setupObservers()
+        initViews()
+    }
+
+    private fun setupObservers() {
+        authViewModel.emailState.observe(this){state->
+            when(state){
+                is ResultValidate.Error -> binding.textInputLayoutEmailForgetPassword.error = state.message
+                is ResultValidate.Success -> binding.textInputLayoutEmailForgetPassword.error = null
+            }
+        }
+
+        authViewModel.resetPasswordState.observe(this){state ->
+            when(state){
+                is ResultState.Loading -> showLoading()
+                is ResultState.Success -> {
+                    showMessage(state.value)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        finish() // Fecha a Activity
+                    }, Toast.LENGTH_LONG.toLong())
+                    hideLoading()
+                }
+                is ResultState.Error -> {
+                    showMessage(state.exception.message.toString())
+                    hideLoading()
+                }
+            }
+        }
+    }
+
+    private fun hideLoading() {
+        binding.pbForgetPassword.visibility = View.GONE
+        binding.btnSendForgetPassword.isEnabled = true
+    }
+
+    private fun showLoading() {
+        binding.pbForgetPassword.visibility = View.VISIBLE
+        binding.btnSendForgetPassword.isEnabled = false
+    }
+
+    private fun initViews() {
         binding.imageViewButtonBackForgetPassword.setOnClickListener {
             finish()
         }
 
         binding.btnSendForgetPassword.setOnClickListener {
-            if(validateEmail()){
-                handleResetPassword()
-                finish()
-            }
+            handleResetPassword()
         }
     }
 
     private fun handleResetPassword() {
-        val testePass = firebaseAuth.sendPasswordResetEmail(email)
-            .addOnSuccessListener {
-                showMessage("Enviamos um e-mail para você!")
-            }
-            .addOnFailureListener {
-                showMessage("Error, tente mais tarde!")
-            }
-
-        testePass.addOnCompleteListener {}
-    }
-
-    private fun validateEmail(): Boolean {
-        email = binding.editTextLoginEmailForgetPassword.text.toString().trim()
-
-        var isValid = true
-
-        // Validação do email
-        if (email.isEmpty()) {
-            binding.textInputLayoutEmailForgetPassword.error = "Preencha o seu email!"
-            isValid = false
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.textInputLayoutEmailForgetPassword.error = "Email inválido!"
-            isValid = false
-        } else {
-            binding.textInputLayoutEmailForgetPassword.error = null
-        }
-
-        return isValid
+        val emailField = binding.editTextLoginEmailForgetPassword.text.toString().trim()
+        authViewModel.resetPassword(emailField)
     }
 }

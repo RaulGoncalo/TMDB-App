@@ -3,6 +3,7 @@ package com.rgos_developer.tmdbapp.presentation.activities
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
@@ -22,6 +23,7 @@ import com.rgos_developer.tmdbapp.domain.common.ResultState
 import com.rgos_developer.tmdbapp.presentation.models.MovieCreditsPresentationModel
 import com.rgos_developer.tmdbapp.presentation.models.MovieDetailsPresentationModel
 import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
+import com.rgos_developer.tmdbapp.presentation.viewModels.AuthViewModel
 import com.rgos_developer.tmdbapp.presentation.viewModels.MovieDetailsCreditsViewModel
 import com.rgos_developer.tmdbapp.presentation.viewModels.UserViewModel
 import com.rgos_developer.tmdbapp.utils.showMessage
@@ -35,19 +37,15 @@ class MovieDetailsActivity : AppCompatActivity() {
         ActivityMovieDetailsBinding.inflate(layoutInflater)
     }
 
-    //Firebase
-    private lateinit var firebaseAuth: FirebaseAuth
-
-    private var userId: String? = null
-    private var movie: MoviePresentationModel? = null
-
     private lateinit var movieViewModel: MovieDetailsCreditsViewModel
     private lateinit var userViewModel: UserViewModel
-
+    private lateinit var authViewModel: AuthViewModel
     private var genreItemAdapter: GenreItemAdapter? = null
     private var castItemAdapter: CastItemAdapter? = null
 
+    private var userId: String? = null
     private var isFavoriteMovie = false
+    private var movie: MoviePresentationModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,16 +57,14 @@ class MovieDetailsActivity : AppCompatActivity() {
             intent.getParcelableExtra(GeneralConstants.PUT_EXTRAS_MOVIE)
         }
 
-        firebaseAuth = FirebaseAuth.getInstance()
-        userId = firebaseAuth.currentUser?.uid
-
         initViews()
 
         movieViewModel = ViewModelProvider(this)[MovieDetailsCreditsViewModel::class.java]
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
         setupMovieDataObservers()
-        fetchMovieData()
+        authViewModel.getCurrentUserId()
     }
 
     private fun fetchMovieData() {
@@ -129,6 +125,31 @@ class MovieDetailsActivity : AppCompatActivity() {
                 }
             }
         }
+
+        userViewModel.addFavoriteMovieState.observe(this){state ->
+            when(state) {
+                is ResultState.Loading -> showLoading()
+                is ResultState.Success -> {
+                    showMessage(state.value)
+                    hideLoading()
+                }
+                is ResultState.Error -> {
+                    showMessage(state.exception.message.toString())
+                }
+            }
+        }
+
+        authViewModel.getCurrentUserId.observe(this){state ->
+            when(state){
+                is ResultState.Loading -> showLoading()
+                is ResultState.Success -> {
+                    userId = state.value
+                    fetchMovieData()
+                    hideLoading()
+                }
+                is ResultState.Error -> showMessage(state.exception.message.toString())
+            }
+        }
     }
 
     private fun handleDisplayFavorite(isFavorite: Boolean) {
@@ -138,7 +159,6 @@ class MovieDetailsActivity : AppCompatActivity() {
             binding.btnFavoriteMovie.setImageResource(R.drawable.ic_favorite_border_24)
         }
     }
-
 
     private fun displayMovieDetails(movie: MovieDetailsPresentationModel) {
         val resquestOptions =

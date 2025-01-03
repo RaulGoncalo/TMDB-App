@@ -25,9 +25,6 @@ class UserViewModel @Inject constructor(
     private val _updateUserState = MutableLiveData<ResultState<String>>()
     val updateUserState: LiveData<ResultState<String>> get() = _updateUserState
 
-    private val _addPhotoUser = MutableLiveData<ResultState<String>>()
-    val addPhotoUser: LiveData<ResultState<String>> get() = _addPhotoUser
-
     private val _listFavoritesMovies = MutableLiveData<ResultState<List<MoviePresentationModel>>>()
     val listFavoritesMovies: LiveData<ResultState<List<MoviePresentationModel>>> get() = _listFavoritesMovies
 

@@ -14,15 +14,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.rgos_developer.tmdbapp.utils.showMessage
-import com.rgos_developer.tmdbapp.presentation.activities.SignInActivity
-import com.rgos_developer.tmdbapp.presentation.BaseView
 import com.rgos_developer.tmdbapp.databinding.FragmentProfileBinding
 import com.rgos_developer.tmdbapp.domain.common.ResultState
 import com.rgos_developer.tmdbapp.domain.models.User
+import com.rgos_developer.tmdbapp.presentation.activities.IntroActivity
+import com.rgos_developer.tmdbapp.presentation.viewModels.AuthViewModel
 import com.rgos_developer.tmdbapp.presentation.viewModels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,10 +27,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class ProfileFragment : Fragment() {
     //DataBinding
     private lateinit var binding: FragmentProfileBinding
-    //Firebase
-    private lateinit var firebaseAuth: FirebaseAuth
     //User data
-    private var idUser: String? = null
+    private var userId: String? = null
     private var uriLocalImage: Uri? = null
     private var currentUser: User? = null
     //Permissons
@@ -52,17 +47,16 @@ class ProfileFragment : Fragment() {
     }
 
     private lateinit var userViewModel: UserViewModel
+    private lateinit var authViewModel: AuthViewModel
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        firebaseAuth = FirebaseAuth.getInstance()
-
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
-        idUser = firebaseAuth.currentUser?.uid
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         setupObservers()
@@ -70,7 +64,7 @@ class ProfileFragment : Fragment() {
         getPermissions()
         initViews()
 
-        getUserData(idUser)
+        authViewModel.getCurrentUserId()
         return binding.root
     }
 
@@ -89,6 +83,18 @@ class ProfileFragment : Fragment() {
                 is ResultState.Success -> {
                     hideLoading()
                     showMessage(state.value)
+                }
+                is ResultState.Error -> showMessage(state.exception.message.toString())
+            }
+        }
+
+        authViewModel.getCurrentUserId.observe(viewLifecycleOwner){state ->
+            when(state){
+                is ResultState.Loading -> showLoading()
+                is ResultState.Success -> {
+                    userId = state.value
+                    getUserData()
+                    hideLoading()
                 }
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
@@ -127,9 +133,9 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun getUserData(idUser: String?) {
-        if(idUser != null){
-            userViewModel.getUserData(idUser)
+    private fun getUserData() {
+        if(userId != null){
+            userViewModel.getUserData(userId!!)
         }
     }
 
@@ -153,12 +159,11 @@ class ProfileFragment : Fragment() {
                 .setMessage("Deseja realmente sair?")
                 .setNegativeButton("Cancelar"){dialog, posicao -> }
                 .setPositiveButton("Sim") {dialog, posicao ->
-                    firebaseAuth.signOut()
+                    authViewModel.logout()
                     // Navega para a SignInActivity
-                    val intent = Intent(requireContext(), SignInActivity::class.java)
+                    val intent = Intent(requireContext(), IntroActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
-
                     requireActivity().finish()
                 }
                 .create()

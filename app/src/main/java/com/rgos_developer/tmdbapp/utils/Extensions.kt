@@ -5,8 +5,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 
 fun Activity.showMessage(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 fun Fragment.showMessage(message: String) {
-    Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
 }

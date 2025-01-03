@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import com.rgos_developer.tmdbapp.domain.common.ResultState
 import com.rgos_developer.tmdbapp.presentation.activities.MovieDetailsActivity
 import com.rgos_developer.tmdbapp.presentation.adapters.MovieItemAdapter
 import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
+import com.rgos_developer.tmdbapp.presentation.viewModels.AuthViewModel
 import com.rgos_developer.tmdbapp.presentation.viewModels.UserViewModel
 import com.rgos_developer.tmdbapp.utils.GeneralConstants
 import com.rgos_developer.tmdbapp.utils.showMessage
@@ -26,12 +28,12 @@ import dagger.hilt.android.AndroidEntryPoint
 class FavoriteFragment : Fragment() {
     private lateinit var binding: FragmentFavoriteBinding
     private lateinit var userViewModel: UserViewModel
+    private lateinit var authViewModel: AuthViewModel
+
     private var userId: String? = null
 
     private var moviesItemAdapter: MovieItemAdapter? = null
 
-    //Firebase
-    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,27 +41,17 @@ class FavoriteFragment : Fragment() {
     ): View {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
-        firebaseAuth = FirebaseAuth.getInstance()
-
-        userId = firebaseAuth.currentUser?.uid
-
-
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
         initViews()
         setupObservers()
-        getFavoritesMovies()
+        authViewModel.getCurrentUserId()
 
         return binding.root
     }
 
-    private fun getFavoritesMovies() {
-        if (userId != null) {
-            userViewModel.getFavoritesMovies(userId!!)
-        } else {
-            showMessage("Erro ao buscar id do Usuário!")
-        }
-    }
+
 
     private fun openMovieDetailActivity(movie: MoviePresentationModel) {
         val intent = Intent(activity, MovieDetailsActivity::class.java)
@@ -93,6 +85,27 @@ class FavoriteFragment : Fragment() {
                 }
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
+        }
+
+        authViewModel.getCurrentUserId.observe(viewLifecycleOwner){state ->
+            when(state){
+                is ResultState.Loading -> showLoading()
+                is ResultState.Success -> {
+                    userId = state.value
+                    getFavoritesMovies()
+                    hideLoading()
+                }
+                is ResultState.Error -> showMessage(state.exception.message.toString())
+            }
+
+        }
+    }
+
+    private fun getFavoritesMovies() {
+        if (userId != null) {
+            userViewModel.getFavoritesMovies(userId!!)
+        } else {
+            showMessage("Erro ao buscar id do Usuário!")
         }
     }
 

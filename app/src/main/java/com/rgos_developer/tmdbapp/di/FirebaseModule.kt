@@ -3,8 +3,11 @@ package com.rgos_developer.tmdbapp.di
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.rgos_developer.tmdbapp.data.repository.AuthRepositoryImpl
 import com.rgos_developer.tmdbapp.data.repository.UserRepositoryImpl
+import com.rgos_developer.tmdbapp.domain.repository.AuthRepository
 import com.rgos_developer.tmdbapp.domain.repository.UserRepository
+import com.rgos_developer.tmdbapp.domain.usescases.AuthUseCase
 import com.rgos_developer.tmdbapp.domain.usescases.UserUseCase
 import dagger.Module
 import dagger.Provides
@@ -37,5 +40,15 @@ object FirebaseModule {
     @Provides
     fun provideUserUseCase(repository: UserRepository) : UserUseCase {
         return UserUseCase(repository)
+    }
+
+    @Provides
+    fun provideAuthRepository(firebaseAuth: FirebaseAuth, firestore: FirebaseFirestore) : AuthRepository{
+        return AuthRepositoryImpl(firebaseAuth, firestore)
+    }
+
+    @Provides
+    fun providerAuthUseCase(repository: AuthRepository) : AuthUseCase {
+        return AuthUseCase(repository)
     }
 }

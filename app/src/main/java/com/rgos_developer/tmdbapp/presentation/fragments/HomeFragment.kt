@@ -15,7 +15,6 @@ import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.rgos_developer.tmdbapp.domain.models.User
 import com.rgos_developer.tmdbapp.utils.GeneralConstants
 import com.rgos_developer.tmdbapp.utils.showMessage
@@ -25,6 +24,7 @@ import com.rgos_developer.tmdbapp.domain.common.ResultState
 import com.rgos_developer.tmdbapp.presentation.adapters.MovieItemAdapter
 import com.rgos_developer.tmdbapp.presentation.adapters.SliderAdapter
 import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
+import com.rgos_developer.tmdbapp.presentation.viewModels.AuthViewModel
 import com.rgos_developer.tmdbapp.presentation.viewModels.MovieViewModel
 import com.rgos_developer.tmdbapp.presentation.viewModels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,25 +32,22 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(){
-    //instsance binding
     private lateinit var binding: FragmentHomeBinding
-    //instsances firebase
-    private lateinit var firebaseAuth: FirebaseAuth
 
-    //instsances slider
     private val sliderHandler = Handler()
     private val sliderRunnable = Runnable {
         binding.viewPagerSlider.currentItem = binding.viewPagerSlider.currentItem + 1
     }
-    //instsances adapters
+
     private var popularMoviesItemAdapter: MovieItemAdapter? = null
     private var upcomingMoviesItemAdapter: MovieItemAdapter? = null
     private var sliderAdapter: SliderAdapter? = null
-    //user
-    private var user: User? = null
-    //ViewModel
+
+    var userId: String? = null
+
     private lateinit var movieViewModel: MovieViewModel
     private lateinit var userViewModel: UserViewModel
+    private lateinit var authViewModel: AuthViewModel
 
 
     override fun onCreateView(
@@ -58,8 +55,6 @@ class HomeFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        firebaseAuth = FirebaseAuth.getInstance()
-
 
         //incializações de views e banners
         initViews()
@@ -68,12 +63,12 @@ class HomeFragment : Fragment(){
         //ViewModel//
         movieViewModel = ViewModelProvider(this)[MovieViewModel::class.java]
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-
+        authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
         setupMovieDataObservers()
         setupUserObservers()
+        authViewModel.getCurrentUserId()
 
-        getUserData()
         return binding.root
     }
 
@@ -85,6 +80,17 @@ class HomeFragment : Fragment(){
                 is ResultState.Error -> {
                     handleError(state.exception)
                 }
+            }
+        }
+
+        authViewModel.getCurrentUserId.observe(viewLifecycleOwner){state ->
+            when(state){
+                is ResultState.Loading -> showLoading()
+                is ResultState.Success -> {
+                    userId = state.value
+                    getUserData()
+                }
+                is ResultState.Error -> showMessage(state.exception.message.toString())
             }
         }
     }
@@ -121,10 +127,8 @@ class HomeFragment : Fragment(){
     }
 
     private fun getUserData() {
-        val idUser = firebaseAuth.currentUser?.uid
-        Log.i("teste_idUser", "$idUser")
-        if(idUser != null){
-            userViewModel.getUserData(idUser)
+        if(userId != null){
+            userViewModel.getUserData(userId!!)
         }
     }
 
