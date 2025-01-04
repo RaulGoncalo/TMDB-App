@@ -11,6 +11,7 @@ interface MovieRepository {
     suspend fun getPopularMovies() : ResultState<List<MovieDomainModel>>
     suspend fun getUpcomingMovies() : ResultState<List<MovieDomainModel>>
     suspend fun getTopRatedMovies() : ResultState<List<MovieDomainModel>>
+    suspend fun getSearchMovie(search: String) : ResultState<List<MovieDomainModel>>
     suspend fun getMovieDetails(idMovie: Long) : ResultState<MovieDetailsDomainModel>
     suspend fun getMovieCredits(idMovie: Long) : ResultState<MovieCreditsDomainModel>
 }

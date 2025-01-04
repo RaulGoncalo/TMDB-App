@@ -19,14 +19,17 @@ class MovieViewModel @Inject constructor(
     private val useCase: MovieUseCase
 ) : ViewModel() {
 
-    val _listPopularMovies = MutableLiveData<ResultState<List<MoviePresentationModel>>>()
+    private val _listPopularMovies = MutableLiveData<ResultState<List<MoviePresentationModel>>>()
     val listPopularMovies: LiveData<ResultState<List<MoviePresentationModel>>> = _listPopularMovies
 
-    val _listUpcomingMovies = MutableLiveData<ResultState<List<MoviePresentationModel>>>()
+    private val _listUpcomingMovies = MutableLiveData<ResultState<List<MoviePresentationModel>>>()
     val listUpcomingMovies: LiveData<ResultState<List<MoviePresentationModel>>> = _listUpcomingMovies
 
-    val _listTopRatedMovies = MutableLiveData<ResultState<List<MoviePresentationModel>>>()
+    private val _listTopRatedMovies = MutableLiveData<ResultState<List<MoviePresentationModel>>>()
     val listTopRatedMovies: LiveData<ResultState<List<MoviePresentationModel>>> = _listTopRatedMovies
+
+    private val _searchMovie =MutableLiveData<ResultState<List<MoviePresentationModel>>>()
+    val searchMovie: LiveData<ResultState<List<MoviePresentationModel>>> = _searchMovie
 
     private val _movieDetails = MutableLiveData<ResultState<MovieDetailsPresentationModel>>()
     val movieDetails: LiveData<ResultState<MovieDetailsPresentationModel>> = _movieDetails
@@ -34,11 +37,7 @@ class MovieViewModel @Inject constructor(
     private val _movieCredits = MutableLiveData<ResultState<MovieCreditsPresentationModel>>()
     val movieCredits: LiveData<ResultState<MovieCreditsPresentationModel>> = _movieCredits
 
-    init {
-        getMovies()
-    }
-
-    private fun getMovies(){
+    fun getMovies(){
         viewModelScope.launch {
             _listPopularMovies.value = useCase.getPopularMovies()
             _listUpcomingMovies.value = useCase.getUpcomingMovies()
@@ -50,6 +49,12 @@ class MovieViewModel @Inject constructor(
         viewModelScope.launch {
             _movieDetails.value = useCase.getMovieDetails(movieId)
             _movieCredits.value = useCase.getMovieCredits(movieId)
+        }
+    }
+
+    fun getSearchMovie(search: String){
+        viewModelScope.launch {
+            _searchMovie.value = useCase.getSearchMovie(search)
         }
     }
 }

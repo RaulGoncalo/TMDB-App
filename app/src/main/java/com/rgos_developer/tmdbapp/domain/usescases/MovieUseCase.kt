@@ -72,6 +72,25 @@ class MovieUseCase @Inject constructor(private val repository: MovieRepository){
         }
     }
 
+    suspend fun getSearchMovie(search: String) : ResultState<List<MoviePresentationModel>>{
+        return try {
+            val result = repository.getSearchMovie(search)
+            if(result is ResultState.Success){
+                ResultState.Success(
+                    result.value.map {
+                        it.toMoviePresationModel()
+                    }
+                )
+            }else if(result is ResultState.Error){
+                ResultState.Error(result.exception)
+            }else{
+                ResultState.Error(Exception("Erro os buscar dados!"))
+            }
+        }catch (error: Exception){
+            ResultState.Error(error)
+        }
+    }
+
     suspend fun getMovieDetails(idMovie: Long) : ResultState<MovieDetailsPresentationModel> {
         return try {
             val result = repository.getMovieDetails(idMovie)

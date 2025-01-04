@@ -6,6 +6,7 @@ import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +22,7 @@ import com.rgos_developer.tmdbapp.utils.showMessage
 import com.rgos_developer.tmdbapp.presentation.activities.MovieDetailsActivity
 import com.rgos_developer.tmdbapp.databinding.FragmentHomeBinding
 import com.rgos_developer.tmdbapp.domain.common.ResultState
+import com.rgos_developer.tmdbapp.presentation.activities.ResultActivity
 import com.rgos_developer.tmdbapp.presentation.adapters.MovieItemAdapter
 import com.rgos_developer.tmdbapp.presentation.adapters.SliderAdapter
 import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
@@ -65,7 +67,9 @@ class HomeFragment : Fragment(){
 
         setupMovieDataObservers()
         setupUserObservers()
+
         authViewModel.getCurrentUserId()
+        movieViewModel.getMovies()
 
         return binding.root
     }
@@ -165,8 +169,6 @@ class HomeFragment : Fragment(){
         }
     }
 
-
-
     private fun openMovieDetailActivity(movie: MoviePresentationModel) {
         val intent = Intent(activity, MovieDetailsActivity::class.java)
         intent.putExtra(GeneralConstants.PUT_EXTRAS_MOVIE, movie)
@@ -223,7 +225,32 @@ class HomeFragment : Fragment(){
                 adapter = upcomingMoviesItemAdapter
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             }
+
+            etSearch.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    // Verifica se o clique foi no drawableEnd
+                    val drawableEnd = etSearch.compoundDrawablesRelative[2] // Drawable do lado direito
+                    if (drawableEnd != null) {
+                        val drawableWidth = drawableEnd.bounds.width()
+                        val clickAreaStart = etSearch.width - etSearch.paddingEnd - drawableWidth
+                        if (event.x > clickAreaStart) {
+                            // Clique detectado no ícone drawableEnd
+                            goToResultActivity()
+                            return@setOnTouchListener true
+                        }
+                    }
+                }
+                false
+            }
         }
+    }
+
+    private fun goToResultActivity() {
+        val textSearch = binding.etSearch.text.toString()
+        val intent = Intent(activity, ResultActivity::class.java)
+        intent.putExtra(GeneralConstants.PUT_EXTRAS_SEARCH, textSearch)
+
+        startActivity(intent)
     }
 
     override fun onPause() {

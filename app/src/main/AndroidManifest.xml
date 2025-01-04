@@ -21,7 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TMDBApp"
         tools:targetApi="31">
-
+        <activity
+            android:name=".presentation.activities.ResultActivity"
+            android:exported="false" />
         <activity
             android:name=".presentation.activities.IntroActivity"
             android:exported="false" />
