@@ -81,6 +81,28 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getSearchMovie(search: String) : ResultState<List<MovieDomainModel>> {
+        return try {
+            val result: Response<ResultMoviesDTO> = apiService.getSearchMovie(search)
+            if (result.isSuccessful) {
+                val movies = result.body()?.results
+                if (movies != null) {
+                    val moviesToDomain = movies.map {
+                        it.toMovieDomainModel()
+                    }
+
+                    ResultState.Success(moviesToDomain)
+                }else{
+                    ResultState.Error(Exception("Erro ao buscar retorno da pesquisa: Retorno igual a null"))
+                }
+            }else{
+                ResultState.Error(Exception("Erro ao buscar retorno da pesquisa, código: ${result.code()}"))
+            }
+        } catch (error: Exception) {
+            ResultState.Error(error)
+        }
+    }
+
     override suspend fun getMovieDetails(idMovie: Long): ResultState<MovieDetailsDomainModel> {
         return try {
             val result = apiService.getMovieDetails(idMovie)

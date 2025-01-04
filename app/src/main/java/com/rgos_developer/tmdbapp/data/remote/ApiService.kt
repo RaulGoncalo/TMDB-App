@@ -41,4 +41,11 @@ interface ApiService {
         @Query(ApiConstants.QUERY_LANGUAGE) language: String = ApiConstants.LANGUAGE,
         @Query(ApiConstants.QUERY_PAGE) page: Int = ApiConstants.DEFAULT_PAGE
     ) : Response<MovieCreditsDTO>
+
+    @GET(ApiConstants.ENDPOINT_SEARCH_MOVIE)
+    suspend fun getSearchMovie(
+        @Query(ApiConstants.QUERY_STRING_SEARCH) search: String,
+        @Query(ApiConstants.QUERY_LANGUAGE) language: String = ApiConstants.LANGUAGE,
+        @Query(ApiConstants.QUERY_PAGE) page: Int = ApiConstants.DEFAULT_PAGE
+    ) : Response<ResultMoviesDTO>
 }

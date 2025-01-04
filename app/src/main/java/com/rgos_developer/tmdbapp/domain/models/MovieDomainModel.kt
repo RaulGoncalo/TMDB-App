@@ -5,8 +5,8 @@ import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
 data class MovieDomainModel (
     val id: Long = 0,
     val title: String = "",
-    val posterPath: String = "",
-    val backdropPath: String = ""
+    val posterPath: String? = "",
+    val backdropPath: String? = ""
 )
 
 fun MovieDomainModel.toMoviePresationModel() : MoviePresentationModel {

@@ -19,6 +19,7 @@ class MovieDetailConstants {
 class GeneralConstants{
     companion object {
         const val PUT_EXTRAS_MOVIE = "movie"
+        const val PUT_EXTRAS_SEARCH = "search"
     }
 }
 
@@ -32,10 +33,12 @@ object ApiConstants {
     const val QUERY_LANGUAGE = "language"
     const val QUERY_PAGE = "page"
     const val QUERY_ID_MOVIE = "idMovie"
+    const val QUERY_STRING_SEARCH = "query"
 
     const val ENDPOINT_POPULAR_MOVIES = "movie/popular"
     const val ENDPOINT_UPCOMING_MOVIES = "movie/upcoming"
     const val ENDPOINT_TOP_RATED_MOVIES = "movie/top_rated"
     const val ENDPOINT_MOVIE_DETAILS = "movie/{idMovie}"
     const val ENDPOINT_MOVIE_CREDITS = "movie/{idMovie}/credits"
+    const val ENDPOINT_SEARCH_MOVIE = "search/movie"
 }
