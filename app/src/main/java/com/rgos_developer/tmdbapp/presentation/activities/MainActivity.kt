@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-    private  lateinit var bottomNavBar: ChipNavigationBar
+    private lateinit var bottomNavBar: ChipNavigationBar
     private lateinit var containerFragment: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,20 +31,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeChipNavigationBar() {
-        binding.bottomNavBar.setOnItemSelectedListener {menuItem ->
-            when(menuItem){
+        binding.bottomNavBar.setOnItemSelectedListener { menuItem ->
+            when (menuItem) {
                 R.id.explorer -> {
                     replaceFragments(HomeFragment())
                     true
                 }
+
                 R.id.favorites -> {
                     replaceFragments(FavoriteFragment())
                     true
                 }
+
                 R.id.profile -> {
                     replaceFragments(ProfileFragment())
                     true
                 }
+
                 else -> false
             }
         }
@@ -53,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun replaceFragments(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.frameContainerFragment, fragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.frameContainerFragment, fragment)
+            .commit()
     }
 }

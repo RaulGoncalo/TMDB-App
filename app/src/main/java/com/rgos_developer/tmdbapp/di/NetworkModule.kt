@@ -19,24 +19,24 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 object NetworkModule {
     @Provides
-    fun provideAuthInterceptor() : Interceptor {
+    fun provideAuthInterceptor(): Interceptor {
         return AuthInterceptor()
     }
 
     @Provides
-    fun provideOkHttpClient (authInterceptor: Interceptor) : OkHttpClient = OkHttpClient.Builder()
+    fun provideOkHttpClient(authInterceptor: Interceptor): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(authInterceptor)
         .build()
 
     @Provides
-    fun provideRetrofitService (okHttpClient: OkHttpClient) : Retrofit = Retrofit.Builder()
+    fun provideRetrofitService(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(ApiConstants.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .client(okHttpClient)
         .build()
 
     @Provides
-    fun provideApiService(retrofit: Retrofit) : ApiService {
+    fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
 
@@ -46,7 +46,7 @@ object NetworkModule {
     }
 
     @Provides
-    fun provideMovieUseCase(repository: MovieRepository) : MovieUseCase {
+    fun provideMovieUseCase(repository: MovieRepository): MovieUseCase {
         return MovieUseCase(repository)
     }
 }

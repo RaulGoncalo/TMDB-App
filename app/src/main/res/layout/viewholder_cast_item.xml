@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text="@string/name_actor"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:textSize="12sp"

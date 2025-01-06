@@ -10,113 +10,114 @@ import com.rgos_developer.tmdbapp.domain.repository.MovieRepository
 import com.rgos_developer.tmdbapp.presentation.models.MovieCreditsPresentationModel
 import com.rgos_developer.tmdbapp.presentation.models.MovieDetailsPresentationModel
 import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
+import com.rgos_developer.tmdbapp.utils.ApiConstants
 import javax.inject.Inject
 
-class MovieUseCase @Inject constructor(private val repository: MovieRepository){
+class MovieUseCase @Inject constructor(private val repository: MovieRepository) {
 
-    suspend fun getPopularMovies() : ResultState<List<MoviePresentationModel>> {
+    suspend fun getPopularMovies(): ResultState<List<MoviePresentationModel>> {
         return try {
             val result = repository.getPopularMovies()
 
-            if(result is ResultState.Success){
+            if (result is ResultState.Success) {
                 ResultState.Success(
                     result.value.map {
                         it.toMoviePresationModel()
                     }
                 )
-            }else if(result is ResultState.Error){
+            } else if (result is ResultState.Error) {
                 ResultState.Error(result.exception)
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro os buscar dados!"))
             }
-        }catch (error: Exception){
+        } catch (error: Exception) {
             ResultState.Error(error)
         }
     }
 
-    suspend fun getUpcomingMovies() : ResultState<List<MoviePresentationModel>>{
+    suspend fun getUpcomingMovies(): ResultState<List<MoviePresentationModel>> {
         return try {
             val result = repository.getUpcomingMovies()
-            if(result is ResultState.Success){
+            if (result is ResultState.Success) {
                 ResultState.Success(
                     result.value.map {
                         it.toMoviePresationModel()
                     }
                 )
-            }else if(result is ResultState.Error){
+            } else if (result is ResultState.Error) {
                 ResultState.Error(result.exception)
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro os buscar dados!"))
             }
-        }catch (error: Exception){
+        } catch (error: Exception) {
             ResultState.Error(error)
         }
     }
 
-    suspend fun getTopRatedMovies() : ResultState<List<MoviePresentationModel>>{
+    suspend fun getTopRatedMovies(): ResultState<List<MoviePresentationModel>> {
         return try {
             val result = repository.getTopRatedMovies()
-            if(result is ResultState.Success){
+            if (result is ResultState.Success) {
                 ResultState.Success(
                     result.value.map {
                         it.toMoviePresationModel()
                     }
                 )
-            }else if(result is ResultState.Error){
+            } else if (result is ResultState.Error) {
                 ResultState.Error(result.exception)
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro os buscar dados!"))
             }
-        }catch (error: Exception){
+        } catch (error: Exception) {
             ResultState.Error(error)
         }
     }
 
-    suspend fun getSearchMovie(search: String) : ResultState<List<MoviePresentationModel>>{
+    suspend fun getSearchMovie(search: String): ResultState<List<MoviePresentationModel>> {
         return try {
             val result = repository.getSearchMovie(search)
-            if(result is ResultState.Success){
+            if (result is ResultState.Success) {
                 ResultState.Success(
                     result.value.map {
                         it.toMoviePresationModel()
                     }
                 )
-            }else if(result is ResultState.Error){
+            } else if (result is ResultState.Error) {
                 ResultState.Error(result.exception)
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro os buscar dados!"))
             }
-        }catch (error: Exception){
+        } catch (error: Exception) {
             ResultState.Error(error)
         }
     }
 
-    suspend fun getMovieDetails(idMovie: Long) : ResultState<MovieDetailsPresentationModel> {
+    suspend fun getMovieDetails(idMovie: Long): ResultState<MovieDetailsPresentationModel> {
         return try {
             val result = repository.getMovieDetails(idMovie)
 
-            if(result is ResultState.Success){
+            if (result is ResultState.Success) {
                 val movieDetails = formatMovieDetails(result.value)
                 ResultState.Success(movieDetails)
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro os buscar dados!"))
             }
-        }catch (error: Exception){
+        } catch (error: Exception) {
             ResultState.Error(error)
         }
     }
 
-    suspend fun getMovieCredits(idMovie: Long) : ResultState<MovieCreditsPresentationModel> {
+    suspend fun getMovieCredits(idMovie: Long): ResultState<MovieCreditsPresentationModel> {
         return try {
             val result = repository.getMovieCredits(idMovie)
 
-            if(result is ResultState.Success){
+            if (result is ResultState.Success) {
                 val movieCredits = result.value.toMovieCreditsPresentationModel()
                 ResultState.Success(movieCredits)
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro os buscar dados!"))
             }
-        }catch (error: Exception){
+        } catch (error: Exception) {
             ResultState.Error(error)
         }
     }
@@ -130,7 +131,7 @@ class MovieUseCase @Inject constructor(private val repository: MovieRepository){
 
         // Formatação de imagem
         val imageUrl = movie.posterPath?.let {
-            "https://image.tmdb.org/t/p/original$it"
+            "${ApiConstants.BASE_URL_IMAGE_ORIGINAL}$it"
         } ?: ""
 
         return MovieDetailsPresentationModel(

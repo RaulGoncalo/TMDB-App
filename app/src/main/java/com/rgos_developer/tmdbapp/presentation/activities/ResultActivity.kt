@@ -43,21 +43,22 @@ class ResultActivity : AppCompatActivity() {
 
         setupObservers()
 
-        if(search != null){
+        if (search != null) {
             movieViewModel.getSearchMovie(search!!)
-        }else{
+        } else {
             showMessage("Erro com o parâmetro de busca!")
         }
     }
 
     private fun setupObservers() {
         movieViewModel.searchMovie.observe(this) { state ->
-            when(state){
+            when (state) {
                 is ResultState.Loading -> binding.pbResult.visibility = View.VISIBLE
                 is ResultState.Success -> {
                     searchResultItemAdapter?.loadList(state.value)
                     binding.pbResult.visibility = View.GONE
                 }
+
                 is ResultState.Error -> {
                     binding.pbResult.visibility = View.GONE
                     showMessage(state.exception.message.toString())

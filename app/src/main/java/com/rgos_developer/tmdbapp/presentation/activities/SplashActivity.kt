@@ -30,11 +30,12 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun setupObserverses() {
-        authViewModel.getCurrentUserId.observe(this){state ->
-            when(state){
+        authViewModel.getCurrentUserId.observe(this) { state ->
+            when (state) {
                 is ResultState.Success -> {
                     goToMain()
                 }
+
                 is ResultState.Error -> gotToIntro()
                 ResultState.Loading -> TODO()
             }

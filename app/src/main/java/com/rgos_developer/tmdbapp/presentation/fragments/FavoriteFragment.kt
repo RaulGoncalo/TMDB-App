@@ -52,7 +52,6 @@ class FavoriteFragment : Fragment() {
     }
 
 
-
     private fun openMovieDetailActivity(movie: MoviePresentationModel) {
         val intent = Intent(activity, MovieDetailsActivity::class.java)
         intent.putExtra(GeneralConstants.PUT_EXTRAS_MOVIE, movie)
@@ -60,8 +59,8 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun initViews() {
-        with(binding){
-            moviesItemAdapter = MovieItemAdapter{movie ->
+        with(binding) {
+            moviesItemAdapter = MovieItemAdapter { movie ->
                 openMovieDetailActivity(movie)
             }
 
@@ -73,28 +72,29 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        userViewModel.listFavoritesMovies.observe(viewLifecycleOwner) {state ->
+        userViewModel.listFavoritesMovies.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ResultState.Loading -> showLoading()
                 is ResultState.Success -> {
                     state.value.forEach {
-                        Log.i("testeListarFavoritos", "Filme: ${it.title}")
                         moviesItemAdapter?.loadList(state.value)
                     }
                     hideLoading()
                 }
+
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
         }
 
-        authViewModel.getCurrentUserId.observe(viewLifecycleOwner){state ->
-            when(state){
+        authViewModel.getCurrentUserId.observe(viewLifecycleOwner) { state ->
+            when (state) {
                 is ResultState.Loading -> showLoading()
                 is ResultState.Success -> {
                     userId = state.value
                     getFavoritesMovies()
                     hideLoading()
                 }
+
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
 

@@ -11,6 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.rgos_developer.tmdbapp.databinding.ViewholderSliderItemBinding
 import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
+import com.rgos_developer.tmdbapp.utils.ApiConstants
 
 class SliderAdapter(
     private val viewPager2: ViewPager2,
@@ -26,12 +27,14 @@ class SliderAdapter(
         notifyDataSetChanged()
     }
 
-    fun loadList(newListMovies: List<MoviePresentationModel>){
+    fun loadList(newListMovies: List<MoviePresentationModel>) {
+        sliderItems.clear()
         sliderItems.addAll(newListMovies)
         notifyDataSetChanged()
     }
 
-    inner class SliderViewHolder(private val binding: ViewholderSliderItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class SliderViewHolder(private val binding: ViewholderSliderItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(sliderItem: MoviePresentationModel) {
             binding.titleText.setText(sliderItem.title)
@@ -39,7 +42,7 @@ class SliderAdapter(
             context?.let {
                 Glide
                     .with(it)
-                    .load("https://image.tmdb.org/t/p/original/"+ sliderItem.backdropPath)
+                    .load(ApiConstants.BASE_URL_IMAGE_ORIGINAL + sliderItem.backdropPath)
                     .apply(resquestOptions)
                     .into(binding.imageSlide)
             }
@@ -56,7 +59,8 @@ class SliderAdapter(
     ): SliderViewHolder {
         context = parent.context
         val view = LayoutInflater.from(parent.context)
-        val binding: ViewholderSliderItemBinding = ViewholderSliderItemBinding.inflate(view, parent, false)
+        val binding: ViewholderSliderItemBinding =
+            ViewholderSliderItemBinding.inflate(view, parent, false)
 
         return SliderViewHolder(binding)
     }

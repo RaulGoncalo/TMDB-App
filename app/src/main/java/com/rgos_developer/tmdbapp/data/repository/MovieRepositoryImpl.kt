@@ -17,7 +17,7 @@ import kotlin.math.E
 class MovieRepositoryImpl @Inject constructor(
     private val apiService: ApiService
 ) : MovieRepository {
-    override suspend fun getPopularMovies() : ResultState<List<MovieDomainModel>> {
+    override suspend fun getPopularMovies(): ResultState<List<MovieDomainModel>> {
         return try {
             val result: Response<ResultMoviesDTO> = apiService.getPopularMovies()
             if (result.isSuccessful) {
@@ -27,10 +27,10 @@ class MovieRepositoryImpl @Inject constructor(
                         it.toMovieDomainModel()
                     }
                     ResultState.Success(moviesToDomain)
-                }else{
+                } else {
                     ResultState.Error(Exception("Erro ao buscar filmes populares: Retorno igual a null"))
                 }
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro ao buscar filmes populares, código: ${result.code()}"))
             }
         } catch (error: Exception) {
@@ -48,10 +48,10 @@ class MovieRepositoryImpl @Inject constructor(
                         it.toMovieDomainModel()
                     }
                     ResultState.Success(moviesToDomain)
-                }else{
+                } else {
                     ResultState.Error(Exception("Erro ao buscar filmes que estão por vir: Retorno igual a null"))
                 }
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro ao buscar filmes que estão por vir, código: ${result.code()}"))
             }
         } catch (error: Exception) {
@@ -70,10 +70,10 @@ class MovieRepositoryImpl @Inject constructor(
                     }
 
                     ResultState.Success(moviesToDomain)
-                }else{
+                } else {
                     ResultState.Error(Exception("Erro ao buscar filmes melhores avaliados: Retorno igual a null"))
                 }
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro ao buscar filmes melhores avaliados, código: ${result.code()}"))
             }
         } catch (error: Exception) {
@@ -81,7 +81,7 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSearchMovie(search: String) : ResultState<List<MovieDomainModel>> {
+    override suspend fun getSearchMovie(search: String): ResultState<List<MovieDomainModel>> {
         return try {
             val result: Response<ResultMoviesDTO> = apiService.getSearchMovie(search)
             if (result.isSuccessful) {
@@ -92,10 +92,10 @@ class MovieRepositoryImpl @Inject constructor(
                     }
 
                     ResultState.Success(moviesToDomain)
-                }else{
+                } else {
                     ResultState.Error(Exception("Erro ao buscar retorno da pesquisa: Retorno igual a null"))
                 }
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro ao buscar retorno da pesquisa, código: ${result.code()}"))
             }
         } catch (error: Exception) {
@@ -110,10 +110,10 @@ class MovieRepositoryImpl @Inject constructor(
                 val movie = result.body()
                 if (movie != null) {
                     ResultState.Success(movie.toMovieDetailsDomainModel())
-                }else{
+                } else {
                     ResultState.Error(Exception("Erro: Detalhes do filme são nulos"))
                 }
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro ao buscar detalhes do filme, código: ${result.code()}"))
             }
         } catch (error: Exception) {
@@ -128,10 +128,10 @@ class MovieRepositoryImpl @Inject constructor(
                 val movie = result.body()
                 if (movie != null) {
                     ResultState.Success(movie.toMovieCreditsDomainModel())
-                }else{
+                } else {
                     ResultState.Error(Exception("Erro: Créditos do filme são nulos"))
                 }
-            }else{
+            } else {
                 ResultState.Error(Exception("Erro ao buscar créditos do filme, código: ${result.code()}"))
             }
         } catch (error: Exception) {

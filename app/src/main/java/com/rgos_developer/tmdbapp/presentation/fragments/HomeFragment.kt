@@ -33,7 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(){
+class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
 
     private val sliderHandler = Handler()
@@ -75,42 +75,45 @@ class HomeFragment : Fragment(){
     }
 
     private fun setupMovieDataObservers() {
-        movieViewModel.listPopularMovies.observe(viewLifecycleOwner){state ->
-            when(state){
+        movieViewModel.listPopularMovies.observe(viewLifecycleOwner) { state ->
+            when (state) {
                 is ResultState.Loading -> binding.pbPopularMovies.visibility = View.VISIBLE
                 is ResultState.Success -> {
                     popularMoviesItemAdapter?.loadList(state.value)
                     binding.pbPopularMovies.visibility = View.GONE
                 }
+
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
         }
 
-        movieViewModel.listUpcomingMovies.observe(viewLifecycleOwner){state ->
-            when(state){
+        movieViewModel.listUpcomingMovies.observe(viewLifecycleOwner) { state ->
+            when (state) {
                 is ResultState.Loading -> binding.pbUpcomingMovies.visibility = View.VISIBLE
                 is ResultState.Success -> {
                     upcomingMoviesItemAdapter?.loadList(state.value)
                     binding.pbUpcomingMovies.visibility = View.GONE
                 }
+
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
         }
 
-        movieViewModel.listTopRatedMovies.observe(viewLifecycleOwner){state ->
-            when(state){
+        movieViewModel.listTopRatedMovies.observe(viewLifecycleOwner) { state ->
+            when (state) {
                 is ResultState.Loading -> binding.progressBarSlider.visibility = View.VISIBLE
                 is ResultState.Success -> {
                     sliderAdapter?.loadList(state.value)
                     binding.progressBarSlider.visibility = View.GONE
                 }
+
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
         }
     }
 
     private fun setupUserObservers() {
-        userViewModel.getUserState.observe(viewLifecycleOwner){ state ->
+        userViewModel.getUserState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ResultState.Loading -> showLoadingUserInformation()
                 is ResultState.Success -> displayUser(state.value)
@@ -120,13 +123,14 @@ class HomeFragment : Fragment(){
             }
         }
 
-        authViewModel.getCurrentUserId.observe(viewLifecycleOwner){state ->
-            when(state){
+        authViewModel.getCurrentUserId.observe(viewLifecycleOwner) { state ->
+            when (state) {
                 is ResultState.Loading -> showLoadingUserInformation()
                 is ResultState.Success -> {
                     userId = state.value
                     getUserData()
                 }
+
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
         }
@@ -151,8 +155,7 @@ class HomeFragment : Fragment(){
         binding.textNameUser.text = name
         binding.textEmailUser.text = email
 
-
-        if(photo.isNotEmpty()){
+        if (photo.isNotEmpty()) {
             context?.let {
                 Glide
                     .with(it)
@@ -164,7 +167,7 @@ class HomeFragment : Fragment(){
     }
 
     private fun getUserData() {
-        if(userId != null){
+        if (userId != null) {
             userViewModel.getUserData(userId!!)
         }
     }
@@ -176,7 +179,6 @@ class HomeFragment : Fragment(){
     }
 
     private fun initBanner() {
-        // Inicialize o adapter e atribua ao ViewPager2
         sliderAdapter = SliderAdapter(binding.viewPagerSlider) { idMovie ->
             openMovieDetailActivity(idMovie)
         }
@@ -195,7 +197,7 @@ class HomeFragment : Fragment(){
         }
         binding.viewPagerSlider.setPageTransformer(compositePageTransformer)
         binding.viewPagerSlider.currentItem = 1
-        // Configuração do comportamento do slider automático
+
         binding.viewPagerSlider.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -228,13 +230,12 @@ class HomeFragment : Fragment(){
 
             etSearch.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
-                    // Verifica se o clique foi no drawableEnd
-                    val drawableEnd = etSearch.compoundDrawablesRelative[2] // Drawable do lado direito
+                    val drawableEnd =
+                        etSearch.compoundDrawablesRelative[2]
                     if (drawableEnd != null) {
                         val drawableWidth = drawableEnd.bounds.width()
                         val clickAreaStart = etSearch.width - etSearch.paddingEnd - drawableWidth
                         if (event.x > clickAreaStart) {
-                            // Clique detectado no ícone drawableEnd
                             goToResultActivity()
                             return@setOnTouchListener true
                         }

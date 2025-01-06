@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -7,7 +9,10 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
+
+
 android {
+
     namespace = "com.rgos_developer.tmdbapp"
     compileSdk = 34
 
@@ -19,6 +24,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+
+        buildConfigField(
+            "String",
+            "TMDB_API_TOKEN",
+            "\"${properties.getProperty("TMDB_API_TOKEN")}\""
+        )
     }
 
     buildTypes {
@@ -41,6 +55,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 

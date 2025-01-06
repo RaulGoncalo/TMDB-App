@@ -9,24 +9,27 @@ import com.bumptech.glide.Glide
 import com.rgos_developer.tmdbapp.R
 import com.rgos_developer.tmdbapp.databinding.ViewholderCastItemBinding
 import com.rgos_developer.tmdbapp.presentation.models.CastPresentationModel
+import com.rgos_developer.tmdbapp.utils.ApiConstants
 
 class CastItemAdapter(
     val context: Context
 ) : Adapter<CastItemAdapter.CastItemViewHolder>() {
-    private val listCast: MutableList<CastPresentationModel> = mutableListOf<CastPresentationModel>()
+    private val listCast: MutableList<CastPresentationModel> =
+        mutableListOf<CastPresentationModel>()
 
-    fun addListCast(newListCast: List<CastPresentationModel>){
+    fun addListCast(newListCast: List<CastPresentationModel>) {
         listCast.addAll(newListCast)
         notifyDataSetChanged()
     }
 
 
-    inner class CastItemViewHolder(val binding: ViewholderCastItemBinding) : ViewHolder(binding.root){
-        fun bind(cast: CastPresentationModel){
+    inner class CastItemViewHolder(val binding: ViewholderCastItemBinding) :
+        ViewHolder(binding.root) {
+        fun bind(cast: CastPresentationModel) {
             binding.textNameActor.setText(cast.name)
 
             val imageUrl = if (cast.profilePath != null) {
-                "https://image.tmdb.org/t/p/original${cast.profilePath}"
+                "${ApiConstants.BASE_URL_IMAGE_ORIGINAL}${cast.profilePath}"
             } else {
                 null // Indica ao Glide que o caminho é inválido
             }

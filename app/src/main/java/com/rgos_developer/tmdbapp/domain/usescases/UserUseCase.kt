@@ -14,43 +14,43 @@ class UserUseCase @Inject constructor(
     private val repository: UserRepository
 ) {
 
-    suspend fun getUserData(userId: String) : ResultState<User>{
+    suspend fun getUserData(userId: String): ResultState<User> {
         return try {
-            if(userId.isNotEmpty()){
+            if (userId.isNotEmpty()) {
                 repository.getUserData(userId)
-            }else{
+            } else {
                 ResultState.Error(Exception("Informe um ID válido"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             ResultState.Error(e)
         }
     }
 
     suspend fun updateUserProfile(user: User, uriLocal: Uri?): ResultState<String> {
         try {
-            if(user.id.isNotEmpty()){
-                if(uriLocal != null){
+            if (user.id.isNotEmpty()) {
+                if (uriLocal != null) {
                     val url = addPhotoUser(user.id, uriLocal)
-                    if(url is ResultState.Success){
+                    if (url is ResultState.Success) {
                         val newUser = user.copy(photo = url.value)
                         return repository.updateUserProfile(user.id, userToMap(newUser))
-                    }else{
+                    } else {
                         return ResultState.Error(Exception("Erro ao adicionar foto do perfil"))
                     }
-                }else{
+                } else {
                     return repository.updateUserProfile(user.id, userToMap(user))
                 }
-            }else{
+            } else {
                 return ResultState.Error(Exception("Informe um ID válido"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             return ResultState.Error(e)
         }
     }
 
     suspend fun getFavoritesMovies(userId: String): ResultState<List<MoviePresentationModel>> {
         return try {
-            if(userId.isNotEmpty()){
+            if (userId.isNotEmpty()) {
                 when (val result = repository.getFavoritesMovies(userId)) {
                     is ResultState.Success -> {
                         val listMovies = result.value.map {
@@ -67,17 +67,17 @@ class UserUseCase @Inject constructor(
                         ResultState.Error(Exception("Erro desconhecido ao buscar filmes favoritos"))
                     }
                 }
-            }else{
+            } else {
                 ResultState.Error(Exception("Informe um ID válido"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             ResultState.Error(e)
         }
     }
 
     suspend fun isFavoriteMovie(userId: String, movieId: Long): ResultState<Boolean> {
         return try {
-            if(userId.isNotEmpty()){
+            if (userId.isNotEmpty()) {
                 val result = repository.getFavoriteMovie(userId, movieId)
                 when (result) {
                     is ResultState.Success -> ResultState.Success(true)
@@ -88,46 +88,49 @@ class UserUseCase @Inject constructor(
                 }
 
 
-            }else{
+            } else {
                 ResultState.Error(Exception("Informe um ID válido"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             ResultState.Error(e)
         }
     }
 
-    suspend fun addFavoriteMovie(userId: String, movie: MoviePresentationModel): ResultState<String> {
+    suspend fun addFavoriteMovie(
+        userId: String,
+        movie: MoviePresentationModel
+    ): ResultState<String> {
         return try {
-            if(userId.isNotEmpty()){
+            if (userId.isNotEmpty()) {
                 repository.addFavoriteMovie(userId, movie)
-            }else{
+            } else {
                 ResultState.Error(Exception("Informe um ID válido"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             ResultState.Error(e)
         }
     }
 
     suspend fun addPhotoUser(userId: String, uri: Uri): ResultState<String> {
         return try {
-            if(userId.isNotEmpty()){
+            if (userId.isNotEmpty()) {
                 repository.addPhotoUser(userId, uri)
-            }else{
+            } else {
                 ResultState.Error(Exception("Informe um ID válido"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             ResultState.Error(e)
         }
     }
 
     suspend fun removeFavoriteMovie(userId: String, movieId: Long): ResultState<String> {
         return try {
-            if(userId.isNotEmpty()){
+            if (userId.isNotEmpty()) {
                 repository.removeFavoriteMovie(userId, movieId)
-            }else{
+            } else {
                 ResultState.Error(Exception("Informe um ID válido"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             ResultState.Error(e)
         }
     }

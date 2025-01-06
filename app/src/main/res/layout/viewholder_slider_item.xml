@@ -7,9 +7,9 @@
         android:id="@+id/imageSlide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:adjustViewBounds="false"
         android:minHeight="300dp"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="false" />
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/titleText"
@@ -17,14 +17,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="8dp"
-        android:paddingVertical="8dp"
-        android:paddingHorizontal="12dp"
-        android:textStyle="bold|italic"
+        android:background="@drawable/title_slider"
+        android:gravity="center"
         android:maxWidth="250dp"
-        android:text="Título da Imagem"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
+        android:text="@string/title_slider"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
-        android:background="@drawable/title_slider"
-        android:gravity="center" />
-
+        android:textStyle="bold|italic" />
 </FrameLayout>

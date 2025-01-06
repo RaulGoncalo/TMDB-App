@@ -35,15 +35,17 @@ class ForgetPasswordActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        authViewModel.emailState.observe(this){state->
-            when(state){
-                is ResultValidate.Error -> binding.textInputLayoutEmailForgetPassword.error = state.message
+        authViewModel.emailState.observe(this) { state ->
+            when (state) {
+                is ResultValidate.Error -> binding.textInputLayoutEmailForgetPassword.error =
+                    state.message
+
                 is ResultValidate.Success -> binding.textInputLayoutEmailForgetPassword.error = null
             }
         }
 
-        authViewModel.resetPasswordState.observe(this){state ->
-            when(state){
+        authViewModel.resetPasswordState.observe(this) { state ->
+            when (state) {
                 is ResultState.Loading -> showLoading()
                 is ResultState.Success -> {
                     showMessage(state.value)
@@ -52,6 +54,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
                     }, Toast.LENGTH_LONG.toLong())
                     hideLoading()
                 }
+
                 is ResultState.Error -> {
                     showMessage(state.exception.message.toString())
                     hideLoading()

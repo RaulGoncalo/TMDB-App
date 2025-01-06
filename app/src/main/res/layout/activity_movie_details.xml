@@ -9,8 +9,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -34,7 +33,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/btnBack"
@@ -73,11 +72,11 @@
 
                         <TextView
                             android:id="@+id/textMovieDetailTitle"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="16dp"
                             android:layout_weight="1"
-                            android:text="Title"
+                            android:text="@string/title_movie"
                             android:textColor="@color/white"
                             android:textSize="32sp"
                             android:textStyle="bold" />
@@ -91,10 +90,10 @@
 
                         <ProgressBar
                             android:id="@+id/pbFavorites"
-                            android:visibility="visible"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:layout_gravity="center_vertical"/>
+                            android:layout_gravity="center_vertical"
+                            android:visibility="visible" />
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -120,17 +119,17 @@
 
                         <TextView
                             android:id="@+id/textMovieTime"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="minutos"
+                            android:text="@string/minutes"
                             android:textColor="@color/white" />
 
                         <TextView
                             android:id="@+id/textImdb"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Nota"
+                            android:text="@string/rating"
                             android:textColor="@color/white" />
                     </LinearLayout>
 
@@ -139,16 +138,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Descrição"
+                        android:text="@string/description"
                         android:textColor="@color/white"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textSummery"
-                        android:layout_marginTop="4dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Descrição do filme"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/description_movie"
                         android:textColor="@color/white" />
 
 
@@ -170,7 +169,7 @@
                             android:id="@+id/textView10"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Elenco"
+                            android:text="@string/cast"
                             android:textColor="@color/white"
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -196,22 +195,21 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <!-- Tela de loading -->
     <FrameLayout
         android:id="@+id/loadingOverlayMovieDetails"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:background="#80000000"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,7 +13,7 @@
     <string name="edittext_confirm_password">Confirmar senha</string>
 
 
-    //login
+    //signin
     <string name="login_title">Login</string>
     <string name="login_btn_login">Login</string>
     <string name="login_forget_password">Esqueceu a senha?</string>
@@ -31,6 +31,7 @@
     <string name="forget_password_title">Recuperar senha</string>
     <string name="forget_password_btn_send">Enviar</string>
     <string name="forget_password_message_info">Informe seu e-mail que enviaremos as informações de sua nova senha</string>
+
     //main
     <string name="hint_search">Pesquisar filmes...</string>
     <string name="text_title_1">Filmes populares</string>
@@ -40,7 +41,26 @@
     <string name="ic_favorite">Favoritos</string>
     <string name="ic_perfil">Perfil</string>
     <string name="action_settings">Settings</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    //movie_details
+    <string name="title_movie">Título</string>
+    <string name="minutes">Minutos</string>
+    <string name="rating">Avaliação</string>
+    <string name="description">Descrição</string>
+    <string name="description_movie">Descrição do filme</string>
+    <string name="cast">Elenco</string>
+
+    //result
+    <string name="result_search_title">Resultados para: [Título do filme]</string>
+
+    //favorites
+    <string name="favorites_title">Meus favoritos</string>
+
+    //cast_item
+    <string name="name_actor">Nome do ator</string>
+
+    //genre_item
+    <string name="genre">Gênero</string>
+
+    <string name="title_slider">Título da Imagem</string>
 </resources>
