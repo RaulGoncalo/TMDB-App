@@ -155,7 +155,20 @@ class ProfileFragment : Fragment() {
         }
 
         binding.btnSignOut.setOnClickListener {
-            authViewModel.logout()
+            AlertDialog.Builder(requireContext())
+                .setTitle("Deslogar")
+                .setMessage("Deseja realmente sair?")
+                .setNegativeButton("Cancelar"){dialog, posicao -> }
+                .setPositiveButton("Sim") {dialog, posicao ->
+                    authViewModel.logout()
+                    // Navega para a SignInActivity
+                    val intent = Intent(requireContext(), IntroActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    requireActivity().finish()
+                }
+                .create()
+                .show()
         }
     }
 
