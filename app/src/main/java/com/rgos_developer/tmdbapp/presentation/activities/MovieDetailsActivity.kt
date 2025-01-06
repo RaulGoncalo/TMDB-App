@@ -50,9 +50,12 @@ class MovieDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        movie = if(Build.VERSION.SDK_INT >= 33){
-            intent.getParcelableExtra(GeneralConstants.PUT_EXTRAS_MOVIE, MoviePresentationModel::class.java)
-        }else{
+        movie = if (Build.VERSION.SDK_INT >= 33) {
+            intent.getParcelableExtra(
+                GeneralConstants.PUT_EXTRAS_MOVIE,
+                MoviePresentationModel::class.java
+            )
+        } else {
             intent.getParcelableExtra(GeneralConstants.PUT_EXTRAS_MOVIE)
         }
 
@@ -70,7 +73,7 @@ class MovieDetailsActivity : AppCompatActivity() {
     private fun fetchMovieData() {
         if (movie?.id != null && movie?.id != 0L && userId != null) {
             movieViewModel.getMovieDetailsCredits(movie!!.id)
-            userViewModel.isFavoriteMovie(userId!!,movie!!.id)
+            userViewModel.isFavoriteMovie(userId!!, movie!!.id)
         } else {
             showMessage("Erro: ID do filme ou ID do Usuário não encontrado")
         }
@@ -78,12 +81,13 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     private fun setupMovieDataObservers() {
         movieViewModel.movieDetails.observe(this) { state ->
-            when(state){
+            when (state) {
                 is ResultState.Loading -> showLoading()
                 is ResultState.Success -> {
                     displayMovieDetails(state.value)
                     hideLoading()
                 }
+
                 is ResultState.Error -> {
                     showMessage(state.exception.message.toString())
                 }
@@ -91,12 +95,13 @@ class MovieDetailsActivity : AppCompatActivity() {
         }
 
         movieViewModel.movieCredits.observe(this) { state ->
-            when(state){
+            when (state) {
                 is ResultState.Loading -> showLoading()
                 is ResultState.Success -> {
                     displayMovieCredits(state.value)
                     hideLoading()
                 }
+
                 is ResultState.Error -> {
                     showMessage(state.exception.message.toString())
                 }
@@ -113,6 +118,7 @@ class MovieDetailsActivity : AppCompatActivity() {
                     handleDisplayFavorite(state.value)
                     hideLoadingFavorite()
                 }
+
                 is ResultState.Error -> {
                     showMessage(state.exception.message.toString())
                 }
@@ -126,6 +132,7 @@ class MovieDetailsActivity : AppCompatActivity() {
                     showMessage(state.value)
                     hideLoadingFavorite()
                 }
+
                 is ResultState.Error -> {
                     showMessage(state.exception.message.toString())
                 }
@@ -139,6 +146,7 @@ class MovieDetailsActivity : AppCompatActivity() {
                     showMessage(state.value)
                     hideLoadingFavorite()
                 }
+
                 is ResultState.Error -> {
                     showMessage(state.exception.message.toString())
                 }
@@ -152,15 +160,16 @@ class MovieDetailsActivity : AppCompatActivity() {
                     userId = state.value
                     fetchMovieData()
                 }
+
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
         }
     }
 
     private fun handleDisplayFavorite(isFavorite: Boolean) {
-        if (isFavorite){
+        if (isFavorite) {
             binding.btnFavoriteMovie.setImageResource(R.drawable.ic_favorite_24)
-        }else{
+        } else {
             binding.btnFavoriteMovie.setImageResource(R.drawable.ic_favorite_border_24)
         }
     }
@@ -193,6 +202,7 @@ class MovieDetailsActivity : AppCompatActivity() {
         binding.pbFavorites.visibility = View.VISIBLE
         binding.btnFavoriteMovie.visibility = View.GONE
     }
+
     private fun hideLoadingFavorite() {
         binding.pbFavorites.visibility = View.GONE
         binding.btnFavoriteMovie.visibility = View.VISIBLE
@@ -214,11 +224,13 @@ class MovieDetailsActivity : AppCompatActivity() {
         //RecyclerViews
         genreItemAdapter = GenreItemAdapter()
         binding.rvGenreView.adapter = genreItemAdapter
-        binding.rvGenreView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvGenreView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         castItemAdapter = CastItemAdapter(this)
         binding.rvCast.adapter = castItemAdapter
-        binding.rvCast.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvCast.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         //Blur view config
         val radius = 10f
@@ -243,10 +255,10 @@ class MovieDetailsActivity : AppCompatActivity() {
     }
 
     private fun handleFavoriteButtonClick() {
-        if(userId != null && movie != null){
-            if(isFavoriteMovie){
+        if (userId != null && movie != null) {
+            if (isFavoriteMovie) {
                 userViewModel.removeFavoriteMovie(userId!!, movie!!.id)
-            }else{
+            } else {
                 userViewModel.addFavoriteMovie(userId!!, movie!!)
             }
             userViewModel.isFavoriteMovie(userId!!, movie!!.id)

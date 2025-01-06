@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    android:layout_marginHorizontal="16dp">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginBottom="12dp">
 
     <ImageView
         android:id="@+id/pic"
@@ -20,14 +20,14 @@
         android:id="@+id/nameTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginHorizontal="4dp"
-        android:text="title"
-        android:textStyle="bold"
-        android:textColor="@color/white"
         android:lines="2"
         android:maxLines="2"
+        android:text="@string/title_movie"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/pic"
         app:layout_constraintStart_toStartOf="@+id/pic"

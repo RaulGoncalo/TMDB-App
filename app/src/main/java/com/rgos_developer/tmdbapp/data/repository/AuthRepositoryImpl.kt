@@ -17,7 +17,7 @@ import javax.inject.Inject
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore
-) : AuthRepository{
+) : AuthRepository {
 
     override suspend fun getCurrentUserId(): ResultState<String> {
         return firebaseAuth.currentUser?.uid?.let { userId ->
@@ -81,7 +81,10 @@ class AuthRepositoryImpl @Inject constructor(
         return response.user ?: throw Exception("Erro ao criar usuário no Firebase Authentication.")
     }
 
-    private suspend fun saveUserToFirestoreWithRollback(user: User, firebaseUser: FirebaseUser): ResultState<Unit> {
+    private suspend fun saveUserToFirestoreWithRollback(
+        user: User,
+        firebaseUser: FirebaseUser
+    ): ResultState<Unit> {
         return try {
             saveUserToFirestore(user)
             ResultState.Success(Unit)

@@ -8,19 +8,21 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.rgos_developer.tmdbapp.databinding.ViewholderGenreItemBinding
 import com.rgos_developer.tmdbapp.presentation.models.GenrePresentationModel
 
-class GenreItemAdapter: Adapter<GenreItemAdapter.GenreItemViewHolder>() {
-    private val listGenre: MutableList<GenrePresentationModel> = mutableListOf<GenrePresentationModel>()
+class GenreItemAdapter : Adapter<GenreItemAdapter.GenreItemViewHolder>() {
+    private val listGenre: MutableList<GenrePresentationModel> =
+        mutableListOf<GenrePresentationModel>()
 
-    fun addListGenres(newListGenre: List<GenrePresentationModel>){
+    fun addListGenres(newListGenre: List<GenrePresentationModel>) {
+        listGenre.clear()
         listGenre.addAll(newListGenre)
-        Log.i("teste_GenreItemAdapter", "addListGenres: ${listGenre[0].name}")
         notifyDataSetChanged()
     }
 
-    inner class GenreItemViewHolder(val binding: ViewholderGenreItemBinding) : ViewHolder(binding.root){
+    inner class GenreItemViewHolder(val binding: ViewholderGenreItemBinding) :
+        ViewHolder(binding.root) {
 
-        fun bind(genre: GenrePresentationModel){
-            binding.textGenre.setText(genre.name)
+        fun bind(genre: GenrePresentationModel) {
+            binding.textGenre.text = genre.name
         }
     }
 

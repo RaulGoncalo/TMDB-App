@@ -64,7 +64,6 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             _isFavoriteMovie.value = ResultState.Loading
             _isFavoriteMovie.value = useCase.isFavoriteMovie(userId, movieId)
-
         }
     }
 

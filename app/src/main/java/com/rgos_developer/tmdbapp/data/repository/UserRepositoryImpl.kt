@@ -26,16 +26,19 @@ class UserRepositoryImpl @Inject constructor(
             } else {
                 ResultState.Error(Exception("Usuário não encontrado"))
             }
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             ResultState.Error(e)
         }
     }
 
-    override suspend fun updateUserProfile(userId: String, data: Map<String, Any>): ResultState<String> {
+    override suspend fun updateUserProfile(
+        userId: String,
+        data: Map<String, Any>
+    ): ResultState<String> {
         return try {
             firestore.collection("users").document(userId).update(data).await()
             ResultState.Success("Usuário atualizado com sucesso")
-        } catch (e: FirebaseException){
+        } catch (e: FirebaseException) {
             ResultState.Error(Exception("Erro ao atualizar o usuário: ${e.message}"))
         } catch (e: Exception) {
             ResultState.Error(e)
@@ -44,7 +47,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getFavoritesMovies(userId: String): ResultState<List<MovieDomainModel>> {
         return try {
-            val snapshot = firestore.collection("favorites").document(userId).collection("movies").get().await()
+            val snapshot =
+                firestore.collection("favorites").document(userId).collection("movies").get()
+                    .await()
             val favoritesMovies = snapshot.mapNotNull {
                 it.toObject(MovieDomainModel::class.java)
             }
@@ -53,12 +58,15 @@ class UserRepositoryImpl @Inject constructor(
             } else {
                 ResultState.Error(Exception("Nenhum favorito encontrado"))
             }
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             ResultState.Error(e)
         }
     }
 
-    override suspend fun getFavoriteMovie(userId: String, movieId: Long): ResultState<MovieDomainModel> {
+    override suspend fun getFavoriteMovie(
+        userId: String,
+        movieId: Long
+    ): ResultState<MovieDomainModel> {
         return try {
             val snapshot = firestore
                 .collection("favorites")
@@ -74,16 +82,20 @@ class UserRepositoryImpl @Inject constructor(
             } else {
                 ResultState.Error(Exception("Nenhum favorito encontrado"))
             }
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             ResultState.Error(e)
         }
     }
 
-    override suspend fun addFavoriteMovie(userId: String, movie: MoviePresentationModel): ResultState<String> {
+    override suspend fun addFavoriteMovie(
+        userId: String,
+        movie: MoviePresentationModel
+    ): ResultState<String> {
         return try {
-            firestore.collection("favorites").document(userId).collection("movies").document(movie.id.toString()).set(movie).await()
+            firestore.collection("favorites").document(userId).collection("movies")
+                .document(movie.id.toString()).set(movie).await()
             ResultState.Success("Filme adicionado aos favoritos com sucesso")
-        } catch (e: FirebaseException){
+        } catch (e: FirebaseException) {
             ResultState.Error(Exception("Erro ao salvar o filme: ${e.message}"))
         } catch (e: Exception) {
             ResultState.Error(e)
@@ -105,7 +117,7 @@ class UserRepositoryImpl @Inject constructor(
                 .toString()
 
             ResultState.Success(url)
-        } catch (e: FirebaseException){
+        } catch (e: FirebaseException) {
             ResultState.Error(Exception("Erro ao salvar foto: ${e.message}"))
         } catch (e: Exception) {
             ResultState.Error(e)
@@ -114,9 +126,10 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun removeFavoriteMovie(userId: String, movieId: Long): ResultState<String> {
         return try {
-            firestore.collection("favorites").document(userId).collection("movies").document(movieId.toString()).delete().await()
+            firestore.collection("favorites").document(userId).collection("movies")
+                .document(movieId.toString()).delete().await()
             ResultState.Success("Filme removido dos favoritos com sucesso")
-        } catch (e: FirebaseException){
+        } catch (e: FirebaseException) {
             ResultState.Error(Exception("Erro ao remover o filme: ${e.message}"))
         } catch (e: Exception) {
             ResultState.Error(e)

@@ -12,35 +12,37 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.rgos_developer.tmdbapp.databinding.ViewholderMovieItemBinding
 import com.rgos_developer.tmdbapp.presentation.models.MoviePresentationModel
+import com.rgos_developer.tmdbapp.utils.ApiConstants
 
 class MovieItemAdapter(
     private val onClickItem: (MoviePresentationModel) -> Unit
-): RecyclerView.Adapter<MovieItemAdapter.MovieItemViewHolder>() {
+) : RecyclerView.Adapter<MovieItemAdapter.MovieItemViewHolder>() {
 
     val listMovies = mutableListOf<MoviePresentationModel>()
 
     private var context: Context? = null
 
-    fun loadList(newListMovies: List<MoviePresentationModel>){
-        listMovies.clear() // Limpa a lista existente
-        listMovies.addAll(newListMovies) // Adiciona os novos itens
-        notifyDataSetChanged() // Notifica o Adapter sobre as mudanças
+    fun loadList(newListMovies: List<MoviePresentationModel>) {
+        listMovies.clear()
+        listMovies.addAll(newListMovies)
+        notifyDataSetChanged()
     }
 
-    inner class MovieItemViewHolder(val binding: ViewholderMovieItemBinding) : ViewHolder(binding.root){
+    inner class MovieItemViewHolder(val binding: ViewholderMovieItemBinding) :
+        ViewHolder(binding.root) {
 
 
-        fun bind(movie: MoviePresentationModel){
+        fun bind(movie: MoviePresentationModel) {
             val resquestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(40))
             context?.let {
                 Glide
                     .with(it)
-                    .load("https://image.tmdb.org/t/p/w500/"+movie.posterPath)
+                    .load(ApiConstants.BASE_URL_IMAGE_W500 + movie.posterPath)
                     .apply(resquestOptions)
                     .into(binding.pic)
             }
 
-            binding.nameTxt.setText(movie.title)
+            binding.nameTxt.text = movie.title
 
             binding.root.setOnClickListener {
                 onClickItem(movie)

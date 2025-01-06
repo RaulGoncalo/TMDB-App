@@ -33,22 +33,28 @@ object FirebaseModule {
     }
 
     @Provides
-    fun provideUserRepository(firestore: FirebaseFirestore, storage: FirebaseStorage) : UserRepository {
+    fun provideUserRepository(
+        firestore: FirebaseFirestore,
+        storage: FirebaseStorage
+    ): UserRepository {
         return UserRepositoryImpl(firestore, storage)
     }
 
     @Provides
-    fun provideUserUseCase(repository: UserRepository) : UserUseCase {
+    fun provideUserUseCase(repository: UserRepository): UserUseCase {
         return UserUseCase(repository)
     }
 
     @Provides
-    fun provideAuthRepository(firebaseAuth: FirebaseAuth, firestore: FirebaseFirestore) : AuthRepository{
+    fun provideAuthRepository(
+        firebaseAuth: FirebaseAuth,
+        firestore: FirebaseFirestore
+    ): AuthRepository {
         return AuthRepositoryImpl(firebaseAuth, firestore)
     }
 
     @Provides
-    fun providerAuthUseCase(repository: AuthRepository) : AuthUseCase {
+    fun providerAuthUseCase(repository: AuthRepository): AuthUseCase {
         return AuthUseCase(repository)
     }
 }

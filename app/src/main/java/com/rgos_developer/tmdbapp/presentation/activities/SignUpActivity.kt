@@ -34,42 +34,48 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        authViewModel.nameState.observe(this){state ->
-            when(state){
+        authViewModel.nameState.observe(this) { state ->
+            when (state) {
                 is ResultValidate.Error -> binding.textInputLayoutNameSignUp.error = state.message
                 is ResultValidate.Success -> binding.textInputLayoutNameSignUp.error = null
             }
         }
 
-        authViewModel.emailState.observe(this){state ->
-            when(state){
+        authViewModel.emailState.observe(this) { state ->
+            when (state) {
                 is ResultValidate.Error -> binding.textInputLayoutEmailSignUp.error = state.message
                 is ResultValidate.Success -> binding.textInputLayoutEmailSignUp.error = null
             }
         }
 
-        authViewModel.passwordState.observe(this){state ->
-            when(state){
-                is ResultValidate.Error -> binding.textInputLayoutPasswordSignUp.error = state.message
+        authViewModel.passwordState.observe(this) { state ->
+            when (state) {
+                is ResultValidate.Error -> binding.textInputLayoutPasswordSignUp.error =
+                    state.message
+
                 is ResultValidate.Success -> binding.textInputLayoutPasswordSignUp.error = null
             }
         }
 
-        authViewModel.confirmPasswordState.observe(this){state ->
-            when(state){
-                is ResultValidate.Error -> binding.textInputLayoutConfirmPasswordSignUp.error = state.message
-                is ResultValidate.Success -> binding.textInputLayoutConfirmPasswordSignUp.error = null
+        authViewModel.confirmPasswordState.observe(this) { state ->
+            when (state) {
+                is ResultValidate.Error -> binding.textInputLayoutConfirmPasswordSignUp.error =
+                    state.message
+
+                is ResultValidate.Success -> binding.textInputLayoutConfirmPasswordSignUp.error =
+                    null
             }
         }
 
-        authViewModel.signUpState.observe(this){ state ->
-            when(state){
+        authViewModel.signUpState.observe(this) { state ->
+            when (state) {
                 is ResultState.Loading -> showLoading()
                 is ResultState.Success -> {
                     showMessage(state.value)
                     goToLoginActivity()
                     hideLoading()
                 }
+
                 is ResultState.Error -> {
                     showMessage(state.exception.message.toString())
                     hideLoading()
@@ -82,7 +88,7 @@ class SignUpActivity : AppCompatActivity() {
         val nameField = binding.editTextNameSignUp.text.toString().trim()
         val emailField = binding.editTextEmailSignUp.text.toString().trim()
         val passwordField = binding.editTextPasswordSignUp.text.toString()
-        val  confirmPasswordField = binding.editTextConfirmPasswordSignUp.text.toString()
+        val confirmPasswordField = binding.editTextConfirmPasswordSignUp.text.toString()
 
         val user = User(
             name = nameField,

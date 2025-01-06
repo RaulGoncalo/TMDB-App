@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val useCase: AuthUseCase
-) : ViewModel(){
+) : ViewModel() {
 
     private val _getCurrentUserId = MutableLiveData<ResultState<String>>()
     val getCurrentUserId: LiveData<ResultState<String>> get() = _getCurrentUserId
@@ -41,30 +41,31 @@ class AuthViewModel @Inject constructor(
     private val _confirmPasswordState = MutableLiveData<ResultValidate<Boolean>>()
     val confirmPasswordState: LiveData<ResultValidate<Boolean>> get() = _confirmPasswordState
 
-    fun getCurrentUserId(){
-       viewModelScope.launch {
-           _getCurrentUserId.value = ResultState.Loading
-           _getCurrentUserId.value = useCase.getCurrentUserId()
-       }
+    fun getCurrentUserId() {
+        viewModelScope.launch {
+            _getCurrentUserId.value = ResultState.Loading
+            _getCurrentUserId.value = useCase.getCurrentUserId()
+        }
     }
 
-    fun resetPassword(email: String){
-       viewModelScope.launch {
-           _resetPasswordState.value = ResultState.Loading
+    fun resetPassword(email: String) {
+        viewModelScope.launch {
+            _resetPasswordState.value = ResultState.Loading
 
-           val emailValidation = useCase.validateEmail(email)
+            val emailValidation = useCase.validateEmail(email)
 
-           _emailState.value = emailValidation
+            _emailState.value = emailValidation
 
-           if(emailValidation is ResultValidate.Success){
-               _resetPasswordState.value = useCase.resetPassword(email)
-           } else {
-               _resetPasswordState.value = ResultState.Error(Exception("Erro na validação dos campos."))
-           }
-       }
+            if (emailValidation is ResultValidate.Success) {
+                _resetPasswordState.value = useCase.resetPassword(email)
+            } else {
+                _resetPasswordState.value =
+                    ResultState.Error(Exception("Erro na validação dos campos."))
+            }
+        }
     }
 
-    fun signIn(email: String, password: String){
+    fun signIn(email: String, password: String) {
         viewModelScope.launch {
             _signInState.value = ResultState.Loading
 
@@ -74,10 +75,10 @@ class AuthViewModel @Inject constructor(
             _emailState.value = emailValidation
             _passwordState.value = passwordValidation
 
-            if(
+            if (
                 emailValidation is ResultValidate.Success &&
                 passwordValidation is ResultValidate.Success
-            ){
+            ) {
                 _signInState.value = useCase.signIn(email, password)
             } else {
                 _signInState.value = ResultState.Error(Exception("Erro na validação dos campos."))
@@ -93,7 +94,8 @@ class AuthViewModel @Inject constructor(
             val nameValidation = useCase.validateName(user.name)
             val emailValidation = useCase.validateEmail(user.email)
             val passwordValidation = useCase.validatePassword(password)
-            val confirmPasswordValidation = useCase.validateConfirmPassword(password, confirmPassword)
+            val confirmPasswordValidation =
+                useCase.validateConfirmPassword(password, confirmPassword)
 
             _nameState.value = nameValidation
             _emailState.value = emailValidation

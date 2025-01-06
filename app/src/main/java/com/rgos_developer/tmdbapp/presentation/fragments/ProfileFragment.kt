@@ -25,23 +25,22 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
-    //DataBinding
     private lateinit var binding: FragmentProfileBinding
-    //User data
+
     private var userId: String? = null
     private var uriLocalImage: Uri? = null
     private var currentUser: User? = null
-    //Permissons
+
     private var isThereCameraPermission = false
     private var isThereGalleryPermission = false
 
     private val galleryManager = registerForActivityResult(
         ActivityResultContracts.GetContent()
-    ){uri ->
-        if(uri != null){
+    ) { uri ->
+        if (uri != null) {
             binding.imageProfile.setImageURI(uri)
             uriLocalImage = uri
-        }else{
+        } else {
             showMessage("Nenhuma imagem selecionada")
         }
     }
@@ -84,18 +83,20 @@ class ProfileFragment : Fragment() {
                     hideLoading()
                     showMessage(state.value)
                 }
+
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
         }
 
-        authViewModel.getCurrentUserId.observe(viewLifecycleOwner){state ->
-            when(state){
+        authViewModel.getCurrentUserId.observe(viewLifecycleOwner) { state ->
+            when (state) {
                 is ResultState.Loading -> showLoading()
                 is ResultState.Success -> {
                     userId = state.value
                     getUserData()
                     hideLoading()
                 }
+
                 is ResultState.Error -> showMessage(state.exception.message.toString())
             }
         }
@@ -104,7 +105,7 @@ class ProfileFragment : Fragment() {
     private fun setDisplayUser(user: User) {
         currentUser = user
         binding.editTextNameProfile.setText(user.name)
-        if(user.photo.isNotEmpty()){
+        if (user.photo.isNotEmpty()) {
             Glide
                 .with(this)
                 .load(user.photo)
@@ -115,8 +116,8 @@ class ProfileFragment : Fragment() {
 
     private fun updateDataProfile() {
         val newName = binding.editTextNameProfile.text.toString()
-        if(newName.isNotEmpty()){
-            if(currentUser != null){
+        if (newName.isNotEmpty()) {
+            if (currentUser != null) {
                 val newUser = User(
                     id = currentUser!!.id,
                     email = currentUser!!.email,
@@ -125,25 +126,25 @@ class ProfileFragment : Fragment() {
                 )
 
                 userViewModel.updateUserData(newUser, uriLocalImage)
-            }else{
+            } else {
                 showMessage("Erro ao buscar usuário atual")
             }
-        }else{
+        } else {
             showMessage("Preencha seu nome")
         }
     }
 
     private fun getUserData() {
-        if(userId != null){
+        if (userId != null) {
             userViewModel.getUserData(userId!!)
         }
     }
 
     fun initViews() {
         binding.imageProfile.setOnClickListener {
-            if(isThereGalleryPermission){
+            if (isThereGalleryPermission) {
                 galleryManager.launch("image/*")
-            }else{
+            } else {
                 showMessage("Nenhuma imagem selecionada")
                 getPermissions()
             }
@@ -154,20 +155,7 @@ class ProfileFragment : Fragment() {
         }
 
         binding.btnSignOut.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Deslogar")
-                .setMessage("Deseja realmente sair?")
-                .setNegativeButton("Cancelar"){dialog, posicao -> }
-                .setPositiveButton("Sim") {dialog, posicao ->
-                    authViewModel.logout()
-                    // Navega para a SignInActivity
-                    val intent = Intent(requireContext(), IntroActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    requireActivity().finish()
-                }
-                .create()
-                .show()
+            authViewModel.logout()
         }
     }
 
@@ -184,29 +172,30 @@ class ProfileFragment : Fragment() {
         ) == PackageManager.PERMISSION_GRANTED
 
         //Lista de permissões negadas
-
         val listPermissionsDenied = mutableListOf<String>()
 
-        if(!isThereCameraPermission){
+        if (!isThereCameraPermission) {
             listPermissionsDenied.add(Manifest.permission.CAMERA)
         }
-        if(!isThereGalleryPermission){
+        if (!isThereGalleryPermission) {
             listPermissionsDenied.add(Manifest.permission.READ_MEDIA_IMAGES)
         }
 
-        if(listPermissionsDenied.isNotEmpty()){
+        if (listPermissionsDenied.isNotEmpty()) {
             //Solicitar ao usuario apenas a lista das permissões negadas
             val gerenciadorPermissoes = registerForActivityResult(
                 ActivityResultContracts.RequestMultiplePermissions()
-            ){permissoes ->
-                isThereCameraPermission = permissoes[Manifest.permission.CAMERA] ?: isThereCameraPermission
-                isThereGalleryPermission = permissoes[Manifest.permission.READ_MEDIA_IMAGES] ?: isThereGalleryPermission
+            ) { permissoes ->
+                isThereCameraPermission =
+                    permissoes[Manifest.permission.CAMERA] ?: isThereCameraPermission
+                isThereGalleryPermission =
+                    permissoes[Manifest.permission.READ_MEDIA_IMAGES] ?: isThereGalleryPermission
 
-                if(isThereCameraPermission){
+                if (isThereCameraPermission) {
                     listPermissionsDenied.remove(Manifest.permission.CAMERA)
                 }
 
-                if(isThereGalleryPermission){
+                if (isThereGalleryPermission) {
                     listPermissionsDenied.remove(Manifest.permission.READ_MEDIA_IMAGES)
                 }
             }

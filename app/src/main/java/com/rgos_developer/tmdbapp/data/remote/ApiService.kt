@@ -10,42 +10,42 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    @GET(ApiConstants.ENDPOINT_POPULAR_MOVIES)
+    @GET(ApiConstants.Endpoints.POPULAR_MOVIES)
     suspend fun getPopularMovies(
-        @Query(ApiConstants.QUERY_LANGUAGE) language: String = ApiConstants.LANGUAGE,
-        @Query(ApiConstants.QUERY_PAGE) page: Int = ApiConstants.DEFAULT_PAGE
+        @Query(ApiConstants.QueryParams.LANGUAGE) language: String = ApiConstants.LANGUAGE,
+        @Query(ApiConstants.QueryParams.PAGE) page: Int = ApiConstants.DEFAULT_PAGE
     ): Response<ResultMoviesDTO>
 
-    @GET(ApiConstants.ENDPOINT_UPCOMING_MOVIES)
+    @GET(ApiConstants.Endpoints.UPCOMING_MOVIES)
     suspend fun getUpcomingMovies(
-        @Query(ApiConstants.QUERY_LANGUAGE) language: String = ApiConstants.LANGUAGE,
-        @Query(ApiConstants.QUERY_PAGE) page: Int = ApiConstants.DEFAULT_PAGE
+        @Query(ApiConstants.QueryParams.LANGUAGE) language: String = ApiConstants.LANGUAGE,
+        @Query(ApiConstants.QueryParams.PAGE) page: Int = ApiConstants.DEFAULT_PAGE
     ): Response<ResultMoviesDTO>
 
-    @GET(ApiConstants.ENDPOINT_TOP_RATED_MOVIES)
+    @GET(ApiConstants.Endpoints.TOP_RATED_MOVIES)
     suspend fun getTopRatedMovies(
-        @Query(ApiConstants.QUERY_LANGUAGE) language: String = ApiConstants.LANGUAGE,
-        @Query(ApiConstants.QUERY_PAGE) page: Int = ApiConstants.DEFAULT_PAGE
+        @Query(ApiConstants.QueryParams.LANGUAGE) language: String = ApiConstants.LANGUAGE,
+        @Query(ApiConstants.QueryParams.PAGE) page: Int = ApiConstants.DEFAULT_PAGE
     ): Response<ResultMoviesDTO>
 
-    @GET(ApiConstants.ENDPOINT_MOVIE_DETAILS)
+    @GET(ApiConstants.Endpoints.MOVIE_DETAILS)
     suspend fun getMovieDetails(
-        @Path(ApiConstants.QUERY_ID_MOVIE) idMovie: Long,
-        @Query(ApiConstants.QUERY_LANGUAGE) language: String = ApiConstants.LANGUAGE,
-        @Query(ApiConstants.QUERY_PAGE) page: Int = ApiConstants.DEFAULT_PAGE
+        @Path(ApiConstants.QueryParams.ID_MOVIE) idMovie: Long,
+        @Query(ApiConstants.QueryParams.LANGUAGE) language: String = ApiConstants.LANGUAGE,
+        @Query(ApiConstants.QueryParams.PAGE) page: Int = ApiConstants.DEFAULT_PAGE
     ): Response<MovieDetailsDTO>
 
-    @GET(ApiConstants.ENDPOINT_MOVIE_CREDITS)
+    @GET(ApiConstants.Endpoints.MOVIE_CREDITS)
     suspend fun getMovieCredits(
-        @Path(ApiConstants.QUERY_ID_MOVIE) idMovie: Long,
-        @Query(ApiConstants.QUERY_LANGUAGE) language: String = ApiConstants.LANGUAGE,
-        @Query(ApiConstants.QUERY_PAGE) page: Int = ApiConstants.DEFAULT_PAGE
+        @Path(ApiConstants.QueryParams.ID_MOVIE) idMovie: Long,
+        @Query(ApiConstants.QueryParams.LANGUAGE) language: String = ApiConstants.LANGUAGE,
+        @Query(ApiConstants.QueryParams.PAGE) page: Int = ApiConstants.DEFAULT_PAGE
     ) : Response<MovieCreditsDTO>
 
-    @GET(ApiConstants.ENDPOINT_SEARCH_MOVIE)
+    @GET(ApiConstants.Endpoints.SEARCH_MOVIE)
     suspend fun getSearchMovie(
-        @Query(ApiConstants.QUERY_STRING_SEARCH) search: String,
-        @Query(ApiConstants.QUERY_LANGUAGE) language: String = ApiConstants.LANGUAGE,
-        @Query(ApiConstants.QUERY_PAGE) page: Int = ApiConstants.DEFAULT_PAGE
+        @Query(ApiConstants.QueryParams.SEARCH_QUERY) search: String,
+        @Query(ApiConstants.QueryParams.LANGUAGE) language: String = ApiConstants.LANGUAGE,
+        @Query(ApiConstants.QueryParams.PAGE) page: Int = ApiConstants.DEFAULT_PAGE
     ) : Response<ResultMoviesDTO>
 }

@@ -12,7 +12,7 @@
         android:background="@drawable/genre_background"
         android:paddingHorizontal="12dp"
         android:paddingVertical="4dp"
-        android:text="TextView"
+        android:text="@string/genre"
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="bold"

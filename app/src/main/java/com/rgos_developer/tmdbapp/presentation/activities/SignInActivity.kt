@@ -37,28 +37,29 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        authViewModel.emailState.observe(this){state ->
-            when(state){
+        authViewModel.emailState.observe(this) { state ->
+            when (state) {
                 is ResultValidate.Error -> binding.textInputLayoutEmail.error = state.message
                 is ResultValidate.Success -> binding.textInputLayoutEmail.error = null
             }
         }
 
-        authViewModel.passwordState.observe(this){state ->
-            when(state){
+        authViewModel.passwordState.observe(this) { state ->
+            when (state) {
                 is ResultValidate.Error -> binding.textInputLayoutPassword.error = state.message
                 is ResultValidate.Success -> binding.textInputLayoutPassword.error = null
             }
         }
 
-        authViewModel.signInState.observe(this){state ->
-            when(state){
+        authViewModel.signInState.observe(this) { state ->
+            when (state) {
                 is ResultState.Loading -> showLoading()
                 is ResultState.Success -> {
                     showMessage(state.value)
                     hideLoading()
                     goToMainActivity()
                 }
+
                 is ResultState.Error -> {
                     showMessage(state.exception.message.toString())
                     hideLoading()
