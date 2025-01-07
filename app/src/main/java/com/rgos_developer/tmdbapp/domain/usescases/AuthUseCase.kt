@@ -22,6 +22,8 @@ class AuthUseCase @Inject constructor(
             repository.signUp(user, password)
         } catch (e: Exception) {
             ResultState.Error(e)
+        }finally {
+            logout()
         }
     }
 

@@ -51,6 +51,10 @@ class FavoriteFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        getFavoritesMovies()
+    }
 
     private fun openMovieDetailActivity(movie: MoviePresentationModel) {
         val intent = Intent(activity, MovieDetailsActivity::class.java)
@@ -76,10 +80,14 @@ class FavoriteFragment : Fragment() {
             when (state) {
                 is ResultState.Loading -> showLoading()
                 is ResultState.Success -> {
-                    state.value.forEach {
-                        moviesItemAdapter?.loadList(state.value)
-                    }
+                    moviesItemAdapter?.loadList(state.value)
                     hideLoading()
+
+                    if (state.value.size <= 0) {
+                        binding.textEmptyList.visibility = View.VISIBLE
+                    } else {
+                        binding.textEmptyList.visibility = View.GONE
+                    }
                 }
 
                 is ResultState.Error -> showMessage(state.exception.message.toString())
@@ -91,7 +99,6 @@ class FavoriteFragment : Fragment() {
                 is ResultState.Loading -> showLoading()
                 is ResultState.Success -> {
                     userId = state.value
-                    getFavoritesMovies()
                     hideLoading()
                 }
 
@@ -104,6 +111,7 @@ class FavoriteFragment : Fragment() {
     private fun getFavoritesMovies() {
         if (userId != null) {
             userViewModel.getFavoritesMovies(userId!!)
+
         } else {
             showMessage("Erro ao buscar id do Usuário!")
         }

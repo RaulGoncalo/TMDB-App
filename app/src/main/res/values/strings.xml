@@ -55,6 +55,7 @@
 
     //favorites
     <string name="favorites_title">Meus favoritos</string>
+    <string name="favorites_empty_list">Adicione filmes a sua lista de favoritos!</string>
 
     //cast_item
     <string name="name_actor">Nome do ator</string>
