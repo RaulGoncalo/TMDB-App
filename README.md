@@ -14,8 +14,12 @@ O **TMDB App** é um aplicativo para Android que utiliza a API do The Movie Data
 ---
 
 ## Capturas de Tela
-
-
+<p>
+<img src="screenshots/screenshot_1.png" width="22%">
+<img src="screenshots/screenshot_2.png" width="22%">
+<img src="screenshots/screenshot_3.png" width="22%">
+<img src="screenshots/screenrecording.gif" width="22%">
+</p>
 ---
 
 ## Tecnologias e conhecimentos exercidos:
