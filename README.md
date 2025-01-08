@@ -13,10 +13,19 @@ O **TMDB App** é um aplicativo para Android que utiliza a API do The Movie Data
 
 ---
 
+## Capturas de Tela
+
+![Screenshot_20250107_205458_TMDB App](https://github.com/user-attachments/assets/a5091f95-000c-4e54-b5c9-124e80873d6f)
+![Screenshot_20250107_205508_TMDB App](https://github.com/user-attachments/assets/bd9c8058-89c0-42bf-99c0-c57e3142bdc8)
+![Screenshot_20250107_205511_TMDB App](https://github.com/user-attachments/assets/a2a9f3b9-34bd-48cf-9bf0-d75bf80ab5d9)
+![Screen_Recording_20250107_211216_TMDB App2x (1)](https://github.com/user-attachments/assets/738eac3b-7d83-4891-9575-c09bb1e0bd68)
+
+---
+
 ## Tecnologias e conhecimentos exercidos:
 - **Linguagem:** Kotlin
 - **Arquitetura:** MVVM (Model-View-ViewModel) + Clean Architecture
-- **Coroutines**: Implementação de função não sincronas.
+- **Coroutines**: Implementação de funções não sincronas.
 - **Jetpack:** ViewModel & LiveData
 - **Consumo de API:** Retrofit e OkHttp
 - **Injeção de Dependência:** Hilt
@@ -56,12 +65,6 @@ O **TMDB App** é um aplicativo para Android que utiliza a API do The Movie Data
 - **/presentation:** Contém as telas e componentes da interface do usuário. Armazenando também as ViewModels
 - **/di:** Configuração das dependências com Hilt.
 - **/domain:** Classes para as regras de negócios da aplicação, como UseCases, Interfaces de repositórios e sealed classes.
-
----
-
-## Capturas de Tela
-
-(Adicione aqui imagens ou GIFs mostrando o funcionamento do aplicativo.)
 
 ---
 
