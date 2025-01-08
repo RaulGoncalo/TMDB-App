@@ -20,7 +20,6 @@ O **TMDB App** é um aplicativo para Android que utiliza a API do The Movie Data
 <img src="screenshots/screenshot_3.png" width="22%">
 <img src="screenshots/screenrecording.gif" width="22%">
 </p>
----
 
 ## Tecnologias e conhecimentos exercidos:
 - **Linguagem:** Kotlin
@@ -40,7 +39,7 @@ O **TMDB App** é um aplicativo para Android que utiliza a API do The Movie Data
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/tmdb-app.git
+   git clone https://github.com/RaulGoncalo/TMDB-App.git
    cd tmdb-app
    ```
 
@@ -79,8 +78,4 @@ O **TMDB App** é um aplicativo para Android que utiliza a API do The Movie Data
 ## Contribuições
 Contribuições são bem-vindas! Sinta-se à vontade!
 
----
-
-## Licença
-Este projeto está licenciado sob a [MIT License](https://opensource.org/licenses/MIT).
 
